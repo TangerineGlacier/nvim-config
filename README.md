@@ -39,6 +39,8 @@ By building this config, I aim to transform Nvim into not just a replacement for
   <img src="image-1.png" alt="alt text">
 </p>
 
+
+# Pre-requisite
 You need to install `pokemon-colorscripts` from 
 
 https://gitlab.com/phoneybadger/pokemon-colorscripts.git
