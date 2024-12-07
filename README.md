@@ -1,6 +1,14 @@
 # The TangerineGlacier Nvim Config
 
+<p align="center">
+  <img src="image.png" alt="alt text" width="200">
+</p>
+
+
+
 Switching to Neovim (Nvim) after over five years of relying on VS Code was both an exciting and daunting journey. Like many, I was drawn to Nvim by the allure of its customizability and the cool-factor of using ergonomic keyboards. But the transition proved challenging—mastering Nvim's steep learning curve and tailoring it to suit my workflow was no small task. Nevertheless, as someone who loves learning new tools, I saw this as an opportunity to push my boundaries.
+
+One recurring problem I’ve faced is that I frequently change laptops, which often leads to the frustrating and time-consuming process of setting up my workflow from scratch. Installing plugins, configuring settings, and personalizing everything to suit my needs would take days. To solve this, I created a comprehensive Nvim config repository that I can clone and set up instantly on any new machine, allowing me to get back to work with minimal downtime.
 
 ## What Does This Config Aim to Achieve?
 
