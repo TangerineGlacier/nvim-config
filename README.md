@@ -35,8 +35,8 @@ By building this config, I aim to transform Nvim into not just a replacement for
 
 ## Init
 <p style="display: flex;">
-  <img src="image.png" alt="alt text" style="margin-right: 10px; width: 350px;">
-  <img src="image-1.png" alt="alt text" style="width: 350px;">
+  <img src="image.png" alt="alt text" style="margin-right: 10px;">
+  <img src="image-1.png" alt="alt text">
 </p>
 
 You need to install `pokemon-colorscripts` from 
