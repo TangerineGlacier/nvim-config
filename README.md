@@ -13,8 +13,9 @@ When replacing a tool, it must not only match but exceed what you're leaving beh
    With frequent work on web projects, I need robust JavaScript plugins, intelligent autocompletion, and linters that integrate effortlessly.
 
 3. **Productivity Tools**  
-   - **Fuzzy Searching**: Quickly locating text within large repositories is crucial.  
-   - **Note-Taking**: Dendron, my go-to VS Code extension for organizing notes, must have a comparable alternative. This config should support task management, brainstorming new ideas, and tracking features as smoothly as VS Code.  
+   - **Fuzzy Text Searching**: Quickly locating text within large repositories is crucial.  
+   - **File Search**: An intuitive, blazing-fast file search capability is essential for navigating complex projects.  
+   - **Note-Taking**: Dendron, my go-to VS Code extension for organizing notes, must have a comparable alternative. This config should support task management, brainstorming new ideas, and tracking features as seamlessly as VS Code.  
 
 4. **Visual Experience**  
    The UI must be clean, visually appealing, and tailored to my preferences. I also want the flexibility to switch between multiple UI themes effortlessly via a single hotkey.
@@ -24,4 +25,4 @@ When replacing a tool, it must not only match but exceed what you're leaving beh
    - Hot-swap tools or configurations as needed.  
    - Easily extend functionality with new plugins or workflows.  
 
-By building this config, I aim to transform Nvim into not just a replacement for VS Code, but a tool that enhances my productivity and enjoyment across all my development tasks.
+By building this config, I aim to transform Nvim into not just a replacement for VS Code, but a tool that enhances my productivity, workflow efficiency, and overall development experience.
