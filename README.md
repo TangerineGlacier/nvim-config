@@ -1,8 +1,5 @@
 # The TangerineGlacier Nvim Config
 
-<p align="center">
-  <img src="image.png" alt="alt text" width="200">
-</p>
 
 
 
@@ -34,3 +31,5 @@ When replacing a tool, it must not only match but exceed what you're leaving beh
    - Easily extend functionality with new plugins or workflows.  
 
 By building this config, I aim to transform Nvim into not just a replacement for VS Code, but a tool that enhances my productivity, workflow efficiency, and overall development experience.
+
+
