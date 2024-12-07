@@ -33,3 +33,15 @@ When replacing a tool, it must not only match but exceed what you're leaving beh
 By building this config, I aim to transform Nvim into not just a replacement for VS Code, but a tool that enhances my productivity, workflow efficiency, and overall development experience.
 
 
+## Init
+
+![alt text](image.png)
+
+You need to install `pokemon-colorscripts` from 
+
+https://gitlab.com/phoneybadger/pokemon-colorscripts.git
+
+You can randomize the pokemons if you wish by replacing the dashboard cmd with
+
+              cmd = "pokemon-colorscripts -r",
+
