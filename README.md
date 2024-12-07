@@ -1,4 +1,4 @@
-# The Tangerine Nvim Config
+# The TangerineGlacier Nvim Config
 
 Switching to Neovim (Nvim) after over five years of relying on VS Code was both an exciting and daunting journey. Like many, I was drawn to Nvim by the allure of its customizability and the cool-factor of using ergonomic keyboards. But the transition proved challenging—mastering Nvim's steep learning curve and tailoring it to suit my workflow was no small task. Nevertheless, as someone who loves learning new tools, I saw this as an opportunity to push my boundaries.
 
