@@ -45,3 +45,4 @@ You can randomize the pokemons if you wish by replacing the dashboard cmd with
 
               cmd = "pokemon-colorscripts -r",
 
+This is a Github repo that runs a pokemon randomizer.
