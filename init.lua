@@ -25,12 +25,89 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Set up plugins using lazy.nvim
 require("lazy").setup({
+  {
+    "nvim-lualine/lualine.nvim",
+    config = function()
+      require("lualine").setup({
+        options = {
+          theme = "tokyonight",
+        }
+      })
+    end
+  },
+  {
+    "neovim/nvim-lspconfig",  -- Install nvim-lspconfig
+    config = function()
+      local nvim_lsp = require("lspconfig")
+
+      -- Example LSP setup for Pyright (Python LSP server)
+      nvim_lsp.pyright.setup({
+        on_attach = function(client, bufnr)
+          -- Example keybindings or other configuration
+          vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', ':lua vim.lsp.buf.definition()<CR>', { noremap = true })
+        end,
+      })
+    end,
+  },
+
   -- nvim-colorizer plugin to highlight color codes
   {
     "norcalli/nvim-colorizer.lua",  
     config = function()
       require'colorizer'.setup()
     end
+  },
+  {
+    "kyazdani42/nvim-tree.lua",
+    config = function()
+      require("nvim-tree").setup({
+        open_on_tab = true,
+        view = {
+          side = "left",
+          width = 30,
+        },
+        git = {
+          enable = true,
+        },
+      })
+    end,
+  },
+
+  -- nvim-cmp and LSP setup
+  {
+    "hrsh7th/nvim-cmp",
+    requires = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "saadparwaiz1/cmp_luasnip",
+      "L3MON4D3/LuaSnip",
+    },
+    config = function()
+      local cmp = require('cmp')
+      cmp.setup({
+        snippet = {
+          expand = function(args)
+            require("luasnip").lsp_expand(args.body)
+          end,
+        },
+        mapping = cmp.mapping.preset.insert({
+          ["<C-k>"] = cmp.mapping.select_prev_item(),
+          ["<C-j>"] = cmp.mapping.select_next_item(),
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+        }),
+        sources = {
+          { name = "nvim_lsp" },
+          { name = "buffer" },
+          { name = "path" },
+          { name = "luasnip" },
+        },
+      })
+      local nvim_lsp = require('lspconfig')
+      
+    end,
   },
 
   -- Snacks plugin configuration for dashboard
@@ -47,39 +124,46 @@ require("lazy").setup({
         preset = {
           pick = nil,
           keys = {
-            { icon = "", key = "f", desc = "Find File", action = ":Telescope find_files" },
-            { icon = "", key = "n", desc = "New File", action = ":ene | startinsert" },
-            { icon = "", key = "g", desc = "Find Text", action = ":Telescope live_grep" },
-            { icon = "", key = "r", desc = "Recent Files", action = ":Telescope oldfiles" },
-            { icon = "", key = "c", desc = "Config", action = ":e $MYVIMRC" },
-            { icon = "", key = "s", desc = "Restore Session", section = "session" },
-            { icon = "󰙦", key = "L", desc = "Lazy", action = ":Lazy" },
-            { icon = "", key = "q", desc = "Quit", action = ":qa" },
+            { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+            { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+            { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+            { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+            { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+            { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+            { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
+            { icon = " ", key = "q", desc = "Quit", action = ":qa" },
           },
+          
           header = [[
 ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
 ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
 ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
 ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
 ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
-╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],        
+╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
+
+
         },
-        sections = {
+
+        
+          sections = {
             { section = "header" },
             { section = "keys", gap = 1, padding = 1 },
             { section = "startup" },
             {
               section = "terminal",
-              cmd = "pokemon-colorscripts -n charizard --no-title; sleep .1",
+              cmd = "pokemon-colorscripts -n snorlax  --no-title; sleep .1",
               random = 10,
               pane = 2,
               indent = 4,
               height = 30,
             },
           },
+        
+
         formats = {
           icon = function(item)
-            return { { item.icon, width = 2, hl = "icon" } }
+            return { item.icon, width = 2, hl = "icon" }
           end,
           header = { "%s", align = "center" },
           file = function(item, ctx)
@@ -150,3 +234,4 @@ require("lazy").setup({
 
 -- Keybinding to open dashboard
 vim.api.nvim_set_keymap('n', '<Leader>d', ':lua require("snacks.dashboard").open()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>mp', ':MarkdownPreview<CR>', { noremap = true, silent = true })
