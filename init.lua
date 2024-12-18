@@ -6,7 +6,8 @@ vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 vim.o.clipboard = 'unnamedplus'
 vim.o.wrap = true
-
+vim.o.scrolloff = 10
+vim.o.showcmd = true
 vim.o.hlsearch = true
 
 -- Bootstrap lazy.nvim
@@ -25,6 +26,17 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Set up plugins using lazy.nvim
 require("lazy").setup({
+  {
+    "christoomey/vim-tmux-navigator", -- Tmux integration
+    config = function()
+      -- Enables seamless navigation between Neovim and Tmux panes
+      vim.g.tmux_navigator_no_mappings = 1
+      vim.api.nvim_set_keymap("n", "<C-h>", ":TmuxNavigateLeft<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<C-l>", ":TmuxNavigateRight<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<C-j>", ":TmuxNavigateDown<CR>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<C-k>", ":TmuxNavigateUp<CR>", { noremap = true, silent = true })
+    end,
+  },
   {
     "nvim-lualine/lualine.nvim",
     config = function()
@@ -109,7 +121,41 @@ require("lazy").setup({
       
     end,
   },
+  { "nvim-lualine/lualine.nvim", config = function()
+    require("lualine").setup({ options = { theme = "tokyonight" } })
+  end },
+{ "neovim/nvim-lspconfig", config = function()
+    local nvim_lsp = require("lspconfig")
 
+    -- LSP servers setup
+    local servers = { "gopls", "ts_ls", "eslint", "tailwindcss" }
+    for _, lsp in ipairs(servers) do
+      nvim_lsp[lsp].setup({
+        on_attach = function(client, bufnr)
+          local opts = { noremap = true, silent = true }
+          vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
+          vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
+          vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>rn", "<Cmd>lua vim.lsp.buf.rename()<CR>", opts)
+        end,
+      })
+    end
+
+    -- TailwindCSS specific setup
+    nvim_lsp.tailwindcss.setup({
+      filetypes = { "html", "css", "javascript", "typescript", "jsx", "tsx" },
+    })
+  end },
+{ "jose-elias-alvarez/null-ls.nvim", config = function()
+    local null_ls = require("null-ls")
+    null_ls.setup({
+      sources = {
+        null_ls.builtins.diagnostics.eslint, -- JavaScript/TypeScript linting
+        null_ls.builtins.formatting.prettier, -- JavaScript/TypeScript formatting
+        null_ls.builtins.diagnostics.golangci_lint, -- Go linting
+        null_ls.builtins.diagnostics.stylelint, -- CSS linting
+      },
+    })
+  end },
   -- Snacks plugin configuration for dashboard
   {
     "folke/snacks.nvim",
@@ -131,7 +177,7 @@ require("lazy").setup({
             { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
             { icon = " ", key = "s", desc = "Restore Session", section = "session" },
             { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
-            { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+            { icon = " ", key = "Q", desc = "Quit", action = ":qa"},
           },
           
           header = [[
@@ -152,7 +198,7 @@ require("lazy").setup({
             { section = "startup" },
             {
               section = "terminal",
-              cmd = "pokemon-colorscripts -n snorlax  --no-title; sleep .1",
+              cmd = "pokemon-colorscripts -n charizard --no-title; sleep .1",
               random = 10,
               pane = 2,
               indent = 4,
@@ -233,5 +279,8 @@ require("lazy").setup({
 })
 
 -- Keybinding to open dashboard
-vim.api.nvim_set_keymap('n', '<Leader>d', ':lua require("snacks.dashboard").open()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>mp', ':MarkdownPreview<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-h>", ":TmuxNavigateLeft<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-l>", ":TmuxNavigateRight<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-j>", ":TmuxNavigateDown<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-k>", ":TmuxNavigateUp<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>d", ":lua require('snacks.dashboard').open()<CR>", { noremap = true, silent = true })
