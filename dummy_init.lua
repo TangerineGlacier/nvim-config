@@ -23,6 +23,7 @@ vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.wrap = true
+vim.opt.scrolloff = 10
 vim.opt.showcmd = true
 vim.opt.hlsearch = true
 vim.opt.title = true
@@ -356,7 +357,7 @@ require("lazy").setup({
     priority = 1000, -- Ensure it loads first if you use multiple color schemes
     config = function()
       require("monokai-pro").setup({
-        filter = "spectrum", -- Choose your preferred filter: "classic", "octagon", "pro", "machine", "ristretto", "spectrum"
+        filter = "pro", -- Choose your preferred filter: "classic", "octagon", "pro", "machine", "ristretto", "spectrum"
         -- Other options:
         transparent_background = false,
         terminal_colors = true,
