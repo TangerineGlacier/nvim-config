@@ -101,23 +101,306 @@ require("lazy").setup({
 
 { "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
 {
-		"ThePrimeagen/refactoring.nvim",
-		keys = {
-			{
-				"<leader>r",
-				function()
-					require("refactoring").select_refactor({
-						show_success_message = true,
-					})
-				end,
-				mode = "v",
-				noremap = true,
-				silent = true,
-				expr = false,
-			},
-		},
-		opts = {},
-	},
+  "echasnovski/mini.hipatterns",
+  event = "BufReadPre",
+  opts = {},
+},
+{
+  "rest-nvim/rest.nvim",
+  dependencies = { { "nvim-lua/plenary.nvim" } },
+  config = function()
+    require("rest-nvim").setup({
+      -- Open request results in a horizontal split
+      result_split_horizontal = false,
+      -- Keep the http file buffer above|left when split horizontal|vertical
+      result_split_in_place = false,
+      -- stay in current windows (.http file) or change to results window (default)
+      stay_in_current_window_after_split = false,
+      -- Skip SSL verification, useful for unknown certificates
+      skip_ssl_verification = false,
+      -- Encode URL before making request
+      encode_url = true,
+      -- Highlight request on run
+      highlight = {
+        enabled = true,
+        timeout = 150,
+      },
+      result = {
+        -- toggle showing URL, HTTP info, headers at top the of result window
+        show_url = true,
+        -- show the generated curl command in case you want to launch
+        -- the same request via the terminal (can be verbose)
+        show_curl_command = false,
+        show_http_info = true,
+        show_headers = true,
+        -- table of curl `--write-out` variables or false if disabled
+        -- for more granular control see Statistics Spec
+        show_statistics = false,
+        -- executables or functions for formatting response body [optional]
+        -- set them to false if you want to disable them
+        formatters = {
+          json = "jq",
+          html = function(body)
+            return vim.fn.system({ "tidy", "-i", "-q", "-" }, body)
+          end,
+        },
+      },
+      -- Jump to request line on run
+      jump_to_request = false,
+      env_file = ".env",
+      custom_dynamic_variables = {},
+      yank_dry_run = true,
+      search_back = true,
+    })
+  end,
+  keys = {
+    {
+      "\\r",
+      "<Plug>RestNvim",
+      desc = "Test the current file",
+    },
+  },
+},
+{
+  "neovim/nvim-lspconfig",
+  opts = {
+    inlay_hints = { enabled = true },
+    ---@type lspconfig.options
+    servers = {
+      cssls = {},
+      tailwindcss = {
+        root_dir = function(...)
+          return require("lspconfig.util").root_pattern(".git")(...)
+        end,
+      },
+      tsserver = {
+        root_dir = function(...)
+          return require("lspconfig.util").root_pattern(".git")(...)
+        end,
+        single_file_support = false,
+        settings = {
+          typescript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "literal",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = false,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+          javascript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+        },
+      },
+      html = {},
+      lua_ls = {
+        -- enabled = false,
+        single_file_support = true,
+        settings = {
+          Lua = {
+            workspace = {
+              checkThirdParty = false,
+            },
+            completion = {
+              workspaceWord = true,
+              callSnippet = "Both",
+            },
+            misc = {
+              parameters = {
+                -- "--log-level=trace",
+              },
+            },
+            hint = {
+              enable = true,
+              setType = false,
+              paramType = true,
+              paramName = "Disable",
+              semicolon = "Disable",
+              arrayIndex = "Disable",
+            },
+            doc = {
+              privateName = { "^_" },
+            },
+            type = {
+              castNumberToInteger = true,
+            },
+            diagnostics = {
+              disable = { "incomplete-signature-doc", "trailing-space" },
+              -- enable = false,
+              groupSeverity = {
+                strong = "Warning",
+                strict = "Warning",
+              },
+              groupFileStatus = {
+                ["ambiguity"] = "Opened",
+                ["await"] = "Opened",
+                ["codestyle"] = "None",
+                ["duplicate"] = "Opened",
+                ["global"] = "Opened",
+                ["luadoc"] = "Opened",
+                ["redefined"] = "Opened",
+                ["strict"] = "Opened",
+                ["strong"] = "Opened",
+                ["type-check"] = "Opened",
+                ["unbalanced"] = "Opened",
+                ["unused"] = "Opened",
+              },
+              unusedLocalExclude = { "_*" },
+            },
+            format = {
+              enable = false,
+              defaultConfig = {
+                indent_style = "space",
+                indent_size = "2",
+                continuation_indent_size = "2",
+              },
+            },
+          },
+        },
+      },
+    },
+    setup = {},
+  },
+},{
+  "nvim-neotest/neotest",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "antoinemadec/FixCursorHold.nvim",
+    "nvim-treesitter/nvim-treesitter",
+    "nvim-neotest/neotest-jest",
+    "nvim-neotest/neotest-plenary",
+  },
+  opts = {
+    -- Can be a list of adapters like what neotest expects,
+    -- or a list of adapter names,
+    -- or a table of adapter names, mapped to adapter configs.
+    -- The adapter will then be automatically loaded with the config.
+    adapters = {
+      ["neotest-plenary"] = {},
+      ["neotest-jest"] = {
+        jestConfigFile = function()
+          local file = vim.fn.expand("%:p")
+          if string.find(file, "/packages/") then
+            return string.match(file, "(.-/[^/]+/)src") .. "jest.config.ts"
+          end
+          return vim.fn.getcwd() .. "/jest.config.ts"
+        end,
+        cwd = function()
+          local file = vim.fn.expand("%:p")
+          if string.find(file, "/packages/") then
+            return string.match(file, "(.-/[^/]+/)src")
+          end
+          return vim.fn.getcwd()
+        end,
+      },
+    },
+    status = { virtual_text = true },
+    output = { open_on_run = true },
+    quickfix = {
+      open = function()
+        if require("lazyvim.util").has("trouble.nvim") then
+          require("trouble").open({ mode = "quickfix", focus = false })
+        else
+          vim.cmd("copen")
+        end
+      end,
+    },
+  },
+  config = function(_, opts)
+    local neotest_ns = vim.api.nvim_create_namespace("neotest")
+    vim.diagnostic.config({
+      virtual_text = {
+        format = function(diagnostic)
+          -- Replace newline and tab characters with space for more compact diagnostics
+          local message =
+            diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
+          return message
+        end,
+      },
+    }, neotest_ns)
+
+    if require("lazyvim.util").has("trouble.nvim") then
+      opts.consumers = opts.consumers or {}
+      -- Refresh and auto close trouble after running tests
+      ---@type neotest.Consumer
+      opts.consumers.trouble = function(client)
+        client.listeners.results = function(adapter_id, results, partial)
+          if partial then
+            return
+          end
+          local tree = assert(client:get_position(nil, { adapter = adapter_id }))
+
+          local failed = 0
+          for pos_id, result in pairs(results) do
+            if result.status == "failed" and tree:get_key(pos_id) then
+              failed = failed + 1
+            end
+          end
+          vim.schedule(function()
+            local trouble = require("trouble")
+            if trouble.is_open() then
+              trouble.refresh()
+              if failed == 0 then
+                trouble.close()
+              end
+            end
+          end)
+          return {}
+        end
+      end
+    end
+
+    if opts.adapters then
+      local adapters = {}
+      for name, config in pairs(opts.adapters or {}) do
+        if type(name) == "number" then
+          if type(config) == "string" then
+            config = require(config)
+          end
+          adapters[#adapters + 1] = config
+        elseif config ~= false then
+          local adapter = require(name)
+          if type(config) == "table" and not vim.tbl_isempty(config) then
+            local meta = getmetatable(adapter)
+            if adapter.setup then
+              adapter.setup(config)
+            elseif meta and meta.__call then
+              adapter(config)
+            else
+              error("Adapter " .. name .. " does not support setup")
+            end
+          end
+          adapters[#adapters + 1] = adapter
+        end
+      end
+      opts.adapters = adapters
+    end
+
+    require("neotest").setup(opts)
+  end,
+-- stylua: ignore
+  keys = {
+    { ";tt", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run File" },
+    { ";tr", function() require("neotest").run.run() end, desc = "Run Nearest" },
+    { ";tT", function() require("neotest").run.run(vim.loop.cwd()) end, desc = "Run All Test Files" },
+    { ";tl", function() require("neotest").run.run_last() end, desc = "Run Last" },
+    { ";ts", function() require("neotest").summary.toggle() end, desc = "Toggle Summary" },
+    { ";to", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show Output" },
+    { ";tO", function() require("neotest").output_panel.toggle() end, desc = "Toggle Output Panel" },
+    { ";tS", function() require("neotest").run.stop() end, desc = "Stop" },
+  },
+},
 	{
 		"nvim-treesitter/nvim-treesitter",
 		opts = {
@@ -373,7 +656,7 @@ require("lazy").setup({
     priority = 1000, -- Ensure it loads first if you use multiple color schemes
     config = function()
       require("monokai-pro").setup({
-        filter = "spectrum", -- Choose your preferred filter: "classic", "octagon", "pro", "machine", "ristretto", "spectrum"
+        filter = "pro", -- Choose your preferred filter: "classic", "octagon", "pro", "machine", "ristretto", "spectrum"
         -- Other options:
         transparent_background = false,
         terminal_colors = true,
