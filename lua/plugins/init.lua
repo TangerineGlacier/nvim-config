@@ -470,6 +470,20 @@ local plugins = {
 			enabled = true,
 			timeout = 3000,
 		  },
+
+			sections = {
+			  { section = "header" },
+			  { section = "keys", gap = 1, padding = 1 },
+			  { section = "startup" },
+			  {
+				section = "terminal",
+				cmd = "pokemon-colorscripts -r --no-title; sleep .1",
+				random = 10,
+				pane = 2,
+				indent = 4,
+				height = 30,
+			  }
+		  },
 		  quickfile = { enabled = true },
 		  scroll = { enabled = true },
 		  statuscolumn = { enabled = true },
@@ -480,6 +494,7 @@ local plugins = {
 			}
 		  }
 		},
+		
 		keys = {
 		  { "<leader>z",  function() Snacks.zen() end, desc = "Toggle Zen Mode" },
 		  { "<leader>Z",  function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
