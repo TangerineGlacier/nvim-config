@@ -1,5 +1,51 @@
 local require = require
 
+vim.o.number = true
+vim.o.relativenumber = true
+vim.o.expandtab = true
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
+vim.o.clipboard = 'unnamedplus'
+vim.o.wrap = true
+vim.o.scrolloff = 10
+vim.o.showcmd = true
+vim.o.hlsearch = true
+vim.g.mapleader = " "
+
+vim.scriptencoding = "utf-8"
+vim.opt.encoding = "utf-8"
+vim.opt.fileencoding = "utf-8"
+
+vim.opt.number = true
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.expandtab = true
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
+vim.opt.clipboard = 'unnamedplus'
+vim.opt.wrap = true
+vim.opt.showcmd = true
+vim.opt.hlsearch = true
+vim.opt.title = true
+vim.opt.autoindent = true
+vim.opt.smartindent = true
+vim.opt.hlsearch = true
+vim.opt.backup = false
+vim.opt.showcmd = true
+vim.opt.cmdheight = 0
+vim.opt.laststatus = 0
+vim.opt.inccommand = "split"
+vim.opt.ignorecase = true
+vim.opt.smarttab = true
+vim.opt.breakindent = true
+vim.opt.backspace = { "start", "eol", "indent" }
+vim.opt.path:append({ "**" })
+vim.opt.wildignore:append({ "*/node_modules/*" })
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+vim.opt.splitkeep = "cursor"
+vim.opt.mouse = ""
+
 local plugins = {
 	--------------------------------------------------- Theme ---------------------------------------------------
 	---
@@ -470,29 +516,46 @@ local plugins = {
 			enabled = true,
 			timeout = 3000,
 		  },
-
-			sections = {
-			  { section = "header" },
-			  { section = "keys", gap = 1, padding = 1 },
-			  { section = "startup" },
-			  {
-				section = "terminal",
-				cmd = "pokemon-colorscripts -r --no-title; sleep .1",
-				random = 10,
-				pane = 2,
-				indent = 4,
-				height = 30,
-			  }
+		  preset = {
+			pick = nil,
+			keys = {
+			  { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+			  { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+			  { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+			  { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+			  { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+			  { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+			  { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
+			  { icon = " ", key = "Q", desc = "Quit", action = ":qa"},
+			},
+			
+			header = [[
+  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
+  
+  
 		  },
 		  quickfile = { enabled = true },
 		  scroll = { enabled = true },
 		  statuscolumn = { enabled = true },
 		  words = { enabled = true },
-		  styles = {
-			notification = {
-			  -- wo = { wrap = true } -- Wrap notifications
-			}
-		  }
+		  sections = {
+            { section = "header" },
+            { section = "keys", gap = 1, padding = 1 },
+            { section = "startup" },
+            {
+              section = "terminal",
+              cmd = "pokemon-colorscripts -n snorlax --no-title; sleep .1",
+              random = 10,
+              pane = 2,
+              indent = 4,
+              height = 30,
+            },
+          },
 		},
 		
 		keys = {
@@ -564,3 +627,4 @@ local plugins = {
 }
 
 require("lazy").setup(plugins, require("config.lazy-nvim"))
+vim.api.nvim_set_keymap("n", "<leader>d", ":lua require('snacks.dashboard').open()<CR>", { noremap = true, silent = true })
