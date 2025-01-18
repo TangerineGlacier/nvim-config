@@ -11,7 +11,6 @@ vim.o.scrolloff = 10
 vim.o.showcmd = true
 vim.o.hlsearch = true
 vim.g.mapleader = " "
-
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
@@ -313,6 +312,7 @@ local plugins = {
 		},
 		opts = function() return require("config.nvim-tree") end,
 		config = function(_, opts) require("nvim-tree").setup(opts) end,
+		vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
 	},
 
 	{
@@ -500,6 +500,43 @@ local plugins = {
 		main = "dapui",
 		opts = function() require("config.dap.dapui") end,
 	},
+	--------------------------------------------------- Obsidian Note Taking  ---------------------------------------------------
+
+	{
+		"epwalsh/obsidian.nvim",
+		version = "*",  -- recommended, use latest release instead of latest commit
+		lazy = true,
+		ft = "markdown",
+		-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+		-- event = {
+		--   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+		--   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+		--   -- refer to `:h file-pattern` for more examples
+		--   "BufReadPre path/to/my-vault/*.md",
+		--   "BufNewFile path/to/my-vault/*.md",
+		-- },
+		dependencies = {
+		  -- Required.
+		  "nvim-lua/plenary.nvim",
+	  
+		  -- see below for full list of optional dependencies 👇
+		},
+		opts = {
+		  workspaces = {
+			{
+			  name = "personal",
+			  path = "~/vaults/personal",
+			},
+			{
+			  name = "work",
+			  path = "~/vaults/work",
+			},
+		  },
+	  
+		  -- see below for full list of options 👇
+		},
+	  },
+
 	--------------------------------------------------- Dashboard  ---------------------------------------------------
 
 	{

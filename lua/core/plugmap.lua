@@ -21,7 +21,7 @@ vim.schedule(function()
 	end)
 
 	------------------------------ Telescope ------------------------------
-	map({ "n", "i", "v" }, "<C-p>", "<cmd>Telescope find_files<cr>")
+	map({ "n", "i", "v" }, "<D-p>", "<cmd>Telescope find_files<cr>")
 	map("n", "<leader>fb", "<cmd>Telescope buffers<cr>")
 	map("n", "<leader>fh", "<cmd>Telescope help_tags<cr>")
 
