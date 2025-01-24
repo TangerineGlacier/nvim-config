@@ -1,11 +1,10 @@
 local require = require
-
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
-vim.o.clipboard = 'unnamedplus'
+vim.o.clipboard = "unnamedplus"
 vim.o.wrap = true
 vim.o.scrolloff = 10
 vim.o.showcmd = true
@@ -21,7 +20,7 @@ vim.opt.relativenumber = true
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
-vim.opt.clipboard = 'unnamedplus'
+vim.opt.clipboard = "unnamedplus"
 vim.opt.wrap = true
 vim.opt.showcmd = true
 vim.opt.hlsearch = true
@@ -38,8 +37,8 @@ vim.opt.ignorecase = true
 vim.opt.smarttab = true
 vim.opt.breakindent = true
 vim.opt.backspace = { "start", "eol", "indent" }
-vim.opt.path:append({ "**" })
-vim.opt.wildignore:append({ "*/node_modules/*" })
+vim.opt.path:append { "**" }
+vim.opt.wildignore:append { "*/node_modules/*" }
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.splitkeep = "cursor"
@@ -53,26 +52,25 @@ local plugins = {
 		lazy = false, -- Load immediately
 		priority = 1000, -- Ensure it loads first if you use multiple color schemes
 		config = function()
-		  require("monokai-pro").setup({
-			filter = "pro", -- Choose your preferred filter: "classic", "octagon", "pro", "machine", "ristretto", "spectrum"
-			-- Other options:
-			transparent_background = false,
-			terminal_colors = true,
-			devicons = true, -- Enable or disable icons
-			styles = {
-			  comments = { italic = true },
-			  keywords = { italic = true },
-			  functions = { bold = true },
-			  variables = {},
-			  operators = {},
-			},
-			-- Add any additional custom highlights here
-			custom_highlights = {},
-		  })
-		  vim.cmd.colorscheme("monokai-pro")
-	
+			require("monokai-pro").setup {
+				filter = "pro", -- Choose your preferred filter: "classic", "octagon", "pro", "machine", "ristretto", "spectrum"
+				-- Other options:
+				transparent_background = false,
+				terminal_colors = true,
+				devicons = true, -- Enable or disable icons
+				styles = {
+					comments = { italic = true },
+					keywords = { italic = true },
+					functions = { bold = true },
+					variables = {},
+					operators = {},
+				},
+				-- Add any additional custom highlights here
+				custom_highlights = {},
+			}
+			vim.cmd.colorscheme("monokai-pro")
 		end,
-	  },
+	},
 	{
 		"sontungexpt/sttusline",
 		branch = "develop",
@@ -205,7 +203,15 @@ local plugins = {
 	-- 	event = "CmdlineEnter",
 	-- 	config = function() require("config.wilder") end,
 	-- },
-
+	{
+		"MeanderingProgrammer/render-markdown.nvim",
+		-- dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
+		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+		-- @module 'render-markdown'
+		-- @type render.md.UserConfig
+		opts = {},
+	},
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		main = "ibl",
@@ -298,7 +304,6 @@ local plugins = {
 	-- 	config = function(_, opts) require("copilot").setup(opts) end,
 	-- },
 
-
 	--------------------------------------------------- File Explorer ---------------------------------------------------
 	{
 		"nvim-tree/nvim-tree.lua",
@@ -312,7 +317,12 @@ local plugins = {
 		},
 		opts = function() return require("config.nvim-tree") end,
 		config = function(_, opts) require("nvim-tree").setup(opts) end,
-		vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
+		vim.keymap.set(
+			"n",
+			"<leader>e",
+			":NvimTreeToggle<CR>",
+			{ noremap = true, silent = true, desc = "Toggle NvimTree" }
+		),
 	},
 
 	{
@@ -374,7 +384,6 @@ local plugins = {
 		main = "todo-comments",
 		opts = {},
 	},
-
 	--------------------------------------------------- Git supporter ---------------------------------------------------
 	{
 		"lewis6991/gitsigns.nvim",
@@ -500,168 +509,93 @@ local plugins = {
 		main = "dapui",
 		opts = function() require("config.dap.dapui") end,
 	},
-	--------------------------------------------------- Obsidian Note Taking  ---------------------------------------------------
-
-	{
-		"epwalsh/obsidian.nvim",
-		version = "*",  -- recommended, use latest release instead of latest commit
-		lazy = true,
-		ft = "markdown",
-		-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-		-- event = {
-		--   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-		--   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
-		--   -- refer to `:h file-pattern` for more examples
-		--   "BufReadPre path/to/my-vault/*.md",
-		--   "BufNewFile path/to/my-vault/*.md",
-		-- },
-		dependencies = {
-		  -- Required.
-		  "nvim-lua/plenary.nvim",
-	  
-		  -- see below for full list of optional dependencies 👇
-		},
-		opts = {
-		  workspaces = {
-			{
-			  name = "personal",
-			  path = "~/vaults/personal",
-			},
-			{
-			  name = "work",
-			  path = "~/vaults/work",
-			},
-		  },
-	  
-		  -- see below for full list of options 👇
-		},
-	  },
 
 	--------------------------------------------------- Dashboard  ---------------------------------------------------
-
 	{
 		"folke/snacks.nvim",
 		priority = 1000,
 		lazy = false,
 		---@type snacks.Config
 		opts = {
-		  bigfile = { enabled = true },
-		  dashboard = { enabled = true },
-		  indent = { enabled = true },
-		  input = { enabled = true },
-		  notifier = {
-			enabled = true,
-			timeout = 3000,
-		  },
-		  preset = {
-			pick = nil,
-			keys = {
-			  { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
-			  { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
-			  { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
-			  { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-			  { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
-			  { icon = " ", key = "s", desc = "Restore Session", section = "session" },
-			  { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
-			  { icon = " ", key = "Q", desc = "Quit", action = ":qa"},
+			bigfile = { enabled = true },
+			dashboard = { enabled = true },
+			notifier = {
+				enabled = true,
+				timeout = 3000,
 			},
-			
-			header = [[
-  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
-  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
-  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
-  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
-  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
-  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
-  
-  
-		  },
-		  quickfile = { enabled = true },
-		  scroll = { enabled = true },
-		  statuscolumn = { enabled = true },
-		  words = { enabled = true },
-		  sections = {
-            { section = "header" },
-            { section = "keys", gap = 1, padding = 1 },
-            { section = "startup" },
-            {
-              section = "terminal",
-              cmd = "pokemon-colorscripts -n snorlax --no-title; sleep .1",
-              random = 10,
-              pane = 2,
-              indent = 4,
-              height = 30,
-            },
-          },
-		},
-		
-		keys = {
-		  { "<leader>z",  function() Snacks.zen() end, desc = "Toggle Zen Mode" },
-		  { "<leader>Z",  function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
-		  { "<leader>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
-		  { "<leader>S",  function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
-		  { "<leader>n",  function() Snacks.notifier.show_history() end, desc = "Notification History" },
-		  { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
-		  { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File" },
-		  { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse", mode = { "n", "v" } },
-		  { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
-		  { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit Current File History" },
-		  { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
-		  { "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log (cwd)" },
-		  { "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
-		  { "<c-/>",      function() Snacks.terminal() end, desc = "Toggle Terminal" },
-		  { "<c-_>",      function() Snacks.terminal() end, desc = "which_key_ignore" },
-		  { "]]",         function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
-		  { "[[",         function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
-		  {
-			"<leader>N",
-			desc = "Neovim News",
-			function()
-			  Snacks.win({
-				file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
-				width = 0.6,
-				height = 0.6,
-				wo = {
-				  spell = false,
-				  wrap = false,
-				  signcolumn = "yes",
-				  statuscolumn = " ",
-				  conceallevel = 3,
+			quickfile = { enabled = true },
+			statuscolumn = { enabled = true },
+			words = { enabled = true },
+			styles = {
+				notification = {
+					wo = { wrap = true }, -- Wrap notifications
 				},
-			  })
-			end,
-		  }
+			},
+		},
+		keys = {
+			{ "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
+			{ "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
+			{ "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
+			{ "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
+			{ "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse" },
+			{ "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit Current File History" },
+			{ "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log (cwd)" },
+			{ "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File" },
+			{ "<c-/>", function() Snacks.terminal() end, desc = "Toggle Terminal" },
+			{ "<c-_>", function() Snacks.terminal() end, desc = "which_key_ignore" },
+			{ "]]", function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
+			{ "[[", function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
+			{
+				"<leader>N",
+				desc = "Neovim News",
+				function()
+					Snacks.win {
+						file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
+						width = 0.6,
+						height = 0.6,
+						wo = {
+							spell = false,
+							wrap = false,
+							-- signcolumn = "yes",
+							statuscolumn = " ",
+							conceallevel = 3,
+						},
+					}
+				end,
+			},
 		},
 		init = function()
-		  vim.api.nvim_create_autocmd("User", {
-			pattern = "VeryLazy",
-			callback = function()
-			  -- Setup some globals for debugging (lazy-loaded)
-			  _G.dd = function(...)
-				Snacks.debug.inspect(...)
-			  end
-			  _G.bt = function()
-				Snacks.debug.backtrace()
-			  end
-			  vim.print = _G.dd -- Override print to use snacks for `:=` command
-	  
-			  -- Create some toggle mappings
-			  Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
-			  Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
-			  Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
-			  Snacks.toggle.diagnostics():map("<leader>ud")
-			  Snacks.toggle.line_number():map("<leader>ul")
-			  Snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map("<leader>uc")
-			  Snacks.toggle.treesitter():map("<leader>uT")
-			  Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
-			  Snacks.toggle.inlay_hints():map("<leader>uh")
-			  Snacks.toggle.indent():map("<leader>ug")
-			  Snacks.toggle.dim():map("<leader>uD")
-			end,
-		  })
+			Snacks = require("snacks")
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "VeryLazy",
+				callback = function()
+					-- Setup some globals for debugging (lazy-loaded)
+					_G.dd = function(...) Snacks.debug.inspect(...) end
+					_G.bt = function() Snacks.debug.backtrace() end
+					vim.print = _G.dd -- Override print to use snacks for `:=` command
+
+					-- Create some toggle mappings
+					Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
+					Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
+					Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
+					Snacks.toggle.diagnostics():map("<leader>ud")
+					Snacks.toggle.line_number():map("<leader>ul")
+					Snacks.toggle
+						.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
+						:map("<leader>uc")
+					Snacks.toggle.treesitter():map("<leader>uT")
+					Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
+					Snacks.toggle.inlay_hints():map("<leader>uh")
+				end,
+			})
 		end,
-	  }
+	},
 }
 
 require("lazy").setup(plugins, require("config.lazy-nvim"))
-vim.api.nvim_set_keymap("n", "<leader>d", ":lua require('snacks.dashboard').open()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap(
+	"n",
+	"<leader>d",
+	":lua require('snacks.dashboard').open()<CR>",
+	{ noremap = true, silent = true }
+)

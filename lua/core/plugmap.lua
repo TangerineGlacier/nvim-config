@@ -5,6 +5,21 @@ local M = {}
 vim.schedule(function()
 	local map = require("utils.mapper").map
 	local load_mod = require("utils").load_mod
+	-- Enable system clipboard integration
+	vim.opt.clipboard = "unnamedplus"
+
+	-- Keymap for selecting text with Shift + Cmd + Arrow keys
+	map("v", "<D-S-Right>", "v<Right>", { noremap = true, silent = true, desc = "Select text to the right" })
+	map("v", "<D-S-Left>", "v<Left>", { noremap = true, silent = true, desc = "Select text to the left" })
+	map("v", "<D-S-Up>", "v<Up>", { noremap = true, silent = true, desc = "Select text upward" })
+	map("v", "<D-S-Down>", "v<Down>", { noremap = true, silent = true, desc = "Select text downward" })
+
+	-- Keymap for copying text with Cmd + C
+	map("v", "<D-c>", '"+y', { noremap = true, silent = true, desc = "Copy to system clipboard" })
+
+	-- Keymap for pasting text with Cmd + V
+	map("n", "<D-v>", '"+p', { noremap = true, silent = true, desc = "Paste from system clipboard" })
+	map("i", "<D-v>", '<C-r>+', { noremap = true, silent = true, desc = "Paste from system clipboard in insert mode" })
 
 	------------------------------ url-open ------------------------------
 	map({ "n", "v" }, "gx", "<cmd>URLOpenUnderCursor<cr>", "Open URL under cursor")

@@ -1,5 +1,6 @@
 local require = require
-
+vim.opt.relativenumber = true
+vim.opt.number = true
 -- core module
 require("core.option")
 require("core.autocmd")
