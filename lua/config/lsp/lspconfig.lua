@@ -1,9 +1,7 @@
 local lspconfig = require("lspconfig")
 local on_attach = require("config.lsp.default").on_attach
 local capabilities = require("config.lsp.default").capabilities
-
 local lsp_servers = {
-
 	-- python
 	{
 		name = "pyright",
@@ -39,7 +37,7 @@ local lsp_servers = {
 		name = "tailwindcss",
 	},
 	{
-		name = "tsserver",
+		name = "ts_ls", -- Updated from tsserver to ts_ls
 	},
 	{
 		name = "emmet_ls",
@@ -80,6 +78,21 @@ local lsp_servers = {
 						maxPreload = 100000,
 						preloadFileSize = 10000,
 					},
+				},
+			},
+		},
+	},
+
+	-- go
+	{
+		name = "gopls",
+		config = {
+			settings = {
+				gopls = {
+					analyses = {
+						unusedparams = true,
+					},
+					staticcheck = true,
 				},
 			},
 		},

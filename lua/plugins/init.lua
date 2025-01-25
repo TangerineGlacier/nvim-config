@@ -1,6 +1,6 @@
 local require = require
 vim.o.number = true
-vim.o.relativenumber = true
+
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
@@ -13,7 +13,6 @@ vim.g.mapleader = " "
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
-
 vim.opt.number = true
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -43,6 +42,7 @@ vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.splitkeep = "cursor"
 vim.opt.mouse = ""
+
 
 local plugins = {
 	--------------------------------------------------- Theme ---------------------------------------------------
@@ -204,14 +204,39 @@ local plugins = {
 	-- 	config = function() require("config.wilder") end,
 	-- },
 	{
-		"MeanderingProgrammer/render-markdown.nvim",
-		-- dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-		-- @module 'render-markdown'
-		-- @type render.md.UserConfig
+		'MeanderingProgrammer/markdown.nvim',
+		main = "render-markdown",
 		opts = {},
-	},
+		name = 'render-markdown', -- Only needed if you have another plugin named markdown.nvim
+		dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you use the mini.nvim suite
+	  },
+  {
+    'rmagatti/goto-preview',
+    config = function()
+      require('goto-preview').setup {
+        width = 120; -- Width of the floating window
+        height = 15; -- Height of the floating window
+        border = {"↖", "─" ,"┐", "│", "┘", "─", "└", "│"}; -- Border characters of the floating window
+        default_mappings = true;
+        debug = false; -- Print debug information
+        opacity = nil; -- 0-100 opacity level of the floating window where 100 is fully transparent.
+        resizing_mappings = false; -- Binds arrow keys to resizing the floating window.
+        post_open_hook = nil; -- A function taking two arguments, a buffer and a window to be ran as a hook.
+        references = { -- Configure the telescope UI for slowing the references cycling window.
+          telescope = require("telescope.themes").get_dropdown({ hide_preview = false })
+        };
+        -- These two configs can also be passed down to the goto-preview definition and implementation calls for one off "peak" functionality.
+        focus_on_open = true; -- Focus the floating window when opening it.
+        dismiss_on_move = false; -- Dismiss the floating window when moving the cursor.
+        force_close = true, -- passed into vim.api.nvim_win_close's second argument. See :h nvim_win_close
+        bufhidden = "wipe", -- the bufhidden option to set on the floating window. See :h bufhidden
+        stack_floating_preview_windows = true, -- Whether to nest floating windows
+        preview_window_title = { enable = true, position = "left" }, -- Whether 
+      }
+    end
+  },
+
+
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		main = "ibl",
@@ -509,87 +534,119 @@ local plugins = {
 		main = "dapui",
 		opts = function() require("config.dap.dapui") end,
 	},
+	{
+		"folke/todo-comments.nvim",
+		dependencies = "nvim-lua/plenary.nvim",
+		config = function()
+		  require("todo-comments").setup {}
+		end
+	  },
+	{
+		"epwalsh/obsidian.nvim",
+		version = "*",  -- recommended, use latest release instead of latest commit
+		lazy = true,
+		ft = "markdown",
+		dependencies = {
+		  "nvim-lua/plenary.nvim",
+		},
+	  },
 
 	--------------------------------------------------- Dashboard  ---------------------------------------------------
 	{
 		"folke/snacks.nvim",
 		priority = 1000,
 		lazy = false,
-		---@type snacks.Config
-		opts = {
-			bigfile = { enabled = true },
-			dashboard = { enabled = true },
-			notifier = {
-				enabled = true,
-				timeout = 3000,
-			},
-			quickfile = { enabled = true },
-			statuscolumn = { enabled = true },
-			words = { enabled = true },
-			styles = {
-				notification = {
-					wo = { wrap = true }, -- Wrap notifications
-				},
-			},
-		},
-		keys = {
-			{ "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
-			{ "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
-			{ "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
-			{ "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
-			{ "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse" },
-			{ "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit Current File History" },
-			{ "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log (cwd)" },
-			{ "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File" },
-			{ "<c-/>", function() Snacks.terminal() end, desc = "Toggle Terminal" },
-			{ "<c-_>", function() Snacks.terminal() end, desc = "which_key_ignore" },
-			{ "]]", function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
-			{ "[[", function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
+		-- -@type snacks.Config
+		defaults = {
+			sections = {
+			{ section = "header" },
+			{ section = "keys", gap = 1, padding = 1 },
+			{ section = "startup" },
 			{
-				"<leader>N",
-				desc = "Neovim News",
-				function()
-					Snacks.win {
-						file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
-						width = 0.6,
-						height = 0.6,
-						wo = {
-							spell = false,
-							wrap = false,
-							-- signcolumn = "yes",
-							statuscolumn = " ",
-							conceallevel = 3,
-						},
-					}
-				end,
+			  section = "terminal",
+			  cmd = "pokemon-colorscripts -n snorlax --no-title; sleep .1",
+			  random = 10,
+			  pane = 2,
+			  indent = 4,
+			  height = 30,
 			},
+		  }},
+		opts = {
+		  bigfile = { enabled = true },
+		  dashboard = { enabled = true },
+		  notifier = {
+			enabled = true,
+			timeout = 3000,
+		  },
+		  quickfile = { enabled = true },
+		  statuscolumn = { enabled = true },
+		  words = { enabled = true },
+		  styles = {
+			notification = {
+			  wo = { wrap = true } -- Wrap notifications
+			}
+		  }
+		},
+
+		keys = {
+		  { "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
+		  { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
+		  { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
+		  { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
+		  { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse" },
+		  { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit Current File History" },
+		  { "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log (cwd)" },
+		  { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File" },
+		  { "<c-/>",      function() Snacks.terminal() end, desc = "Toggle Terminal" },
+		  { "<c-_>",      function() Snacks.terminal() end, desc = "which_key_ignore" },
+		  { "]]",         function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
+		  { "[[",         function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
+		  {
+			"<leader>N",
+			function()
+			  Snacks.win({
+				file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
+				width = 0.6,
+				height = 0.6,
+				wo = {
+				  spell = false,
+				  wrap = false,
+				  -- signcolumn = "yes",
+				  statuscolumn = " ",
+				  conceallevel = 3,
+				},
+			  })
+			end,
+		  }
 		},
 		init = function()
-			Snacks = require("snacks")
-			vim.api.nvim_create_autocmd("User", {
-				pattern = "VeryLazy",
-				callback = function()
-					-- Setup some globals for debugging (lazy-loaded)
-					_G.dd = function(...) Snacks.debug.inspect(...) end
-					_G.bt = function() Snacks.debug.backtrace() end
-					vim.print = _G.dd -- Override print to use snacks for `:=` command
-
-					-- Create some toggle mappings
-					Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
-					Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
-					Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
-					Snacks.toggle.diagnostics():map("<leader>ud")
-					Snacks.toggle.line_number():map("<leader>ul")
-					Snacks.toggle
-						.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
-						:map("<leader>uc")
-					Snacks.toggle.treesitter():map("<leader>uT")
-					Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
-					Snacks.toggle.inlay_hints():map("<leader>uh")
-				end,
-			})
+		  Snacks = require("snacks")
+		  vim.api.nvim_create_autocmd("User", {
+			pattern = "VeryLazy",
+			callback = function()
+			  -- Setup some globals for debugging (lazy-loaded)
+			  _G.dd = function(...)
+				Snacks.debug.inspect(...)
+			  end
+			  _G.bt = function()
+				Snacks.debug.backtrace()
+			  end
+			  vim.print = _G.dd -- Override print to use snacks for `:=` command
+	
+			  -- Create some toggle mappings
+			  Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
+			  Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
+			  Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
+			  Snacks.toggle.diagnostics():map("<leader>ud")
+			  Snacks.toggle.line_number():map("<leader>ul")
+			  Snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map("<leader>uc")
+			  Snacks.toggle.treesitter():map("<leader>uT")
+			  Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
+			  Snacks.toggle.inlay_hints():map("<leader>uh")
+			end,
+		  })
 		end,
-	},
+	  },
 }
 
 require("lazy").setup(plugins, require("config.lazy-nvim"))

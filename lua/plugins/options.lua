@@ -1,5 +1,4 @@
-local require = require
-
+-- Set highlight on search
 vim.o.hlsearch = true
 
 -- Make line numbers default
@@ -37,21 +36,3 @@ vim.o.conceallevel=2
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
-vim.opt.number = true
--- core module
-require("core.option")
-require("core.autocmd")
-require("core.nvimmap")
-require("core.plugmap")
-require("keymaps")
-require("plugins.options")
-
--- Install lazy neovim if not installed
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-
-if not vim.loop.fs_stat(lazypath) then
-	require("core.bootstrap").lazy(lazypath)
-else
-	require("core.bootstrap").boot(lazypath)
-end
