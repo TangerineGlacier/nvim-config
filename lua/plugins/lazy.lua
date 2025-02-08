@@ -31,7 +31,22 @@ require('lazy').setup({
     ---@type snacks.Config
     opts = {
       bigfile = { enabled = true },
-      dashboard = { enabled = true },
+      dashboard = { enabled = true ,
+      sections = {
+        { section = "header" },
+        { section = "keys", gap = 1, padding = 3 },
+        { section = "startup" },
+        {
+          section = "terminal",
+          cmd = "pokemon-colorscripts -n snorlax  --no-title; sleep .1",
+          random = 10,
+          pane = 2,
+          indent = 4,
+          height = 30,
+        },
+      },
+    
+    },
       notifier = {
         enabled = true,
         timeout = 3000,
