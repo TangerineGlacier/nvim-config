@@ -1,23 +1,22 @@
-if vim.loader then
-	vim.loader.enable()
-  end
-  
-  -- Attempt to require "util.debug" safely.
-  local ok, debug_util = pcall(require, "util.debug")
-  if not ok then
-	-- Fallback implementation if the module isn't found.
-	debug_util = {
-	  dump = function(...)
-		print("[DEBUG]", ...)
-	  end,
-	}
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+require('keymaps')
+require('plugins.lazy')
+require('plugins.misc')
+require('plugins.lualine')
+require('options')
+require('misc')
+require('plugins.dap')
+require('plugins.gitsigns')
+require('plugins.tele')
+require('plugins.treesitter')
+require('plugins.lsp')
+require('plugins.trouble')
 
-  end
-  
-  _G.dd = function(...)
-	debug_util.dump(...)
-  end
-  vim.print = _G.dd
-  
-  require("config.lazy")
-  
+require('plugins.zenmode')
+require('plugins.neogit')
+require('plugins.codesnap')
+require('plugins.harpoon')
+require('plugins.mini')
+
+-- vim: ts=8 sts=2 sw=2 et
