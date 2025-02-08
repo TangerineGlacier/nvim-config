@@ -12,7 +12,7 @@ require('plugins.tele')
 require('plugins.treesitter')
 require('plugins.lsp')
 require('plugins.trouble')
-
+require('plugins.nvim-tangerine').setup()
 require('plugins.zenmode')
 require('plugins.neogit')
 require('plugins.codesnap')
