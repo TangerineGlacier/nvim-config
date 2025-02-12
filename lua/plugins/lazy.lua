@@ -17,10 +17,20 @@ vim.o.termguicolors = true
 
 require('lazy').setup({
   {
-    "nvim-tree/nvim-tree.lua",
+    'nvim-tree/nvim-tree.lua',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons', -- Optional: for file icons
+    },
     config = function()
-      require("nvim-tree").setup()
-    end
+      require("nvim-tree").setup {
+        -- Add any custom nvim-tree settings here.
+        update_focused_file = { enable = true },
+        view = {
+          width = 30,
+          side = 'left',
+        },
+      }
+    end,
   },
 
   { 'echasnovski/mini.nvim', version = false },
@@ -153,7 +163,8 @@ require('lazy').setup({
             },
           })
         end,
-      }
+      },
+      { "<leader>d", function() Snacks.dashboard() end, desc = "Open Dashboard" },
     },
     init = function()
       Snacks = require("snacks")
@@ -374,6 +385,7 @@ require('lazy').setup({
 
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+
     build = function()
       pcall(require('nvim-treesitter.install').update { with_sync = true })
     end,
