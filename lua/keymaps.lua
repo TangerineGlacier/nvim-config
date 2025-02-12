@@ -39,3 +39,9 @@ vim.api.nvim_set_keymap("n", "<leader>nn", ":Noice dismiss<CR>", {noremap=true})
 vim.keymap.set("n", "<leader>ee", "<cmd>GoIfErr<cr>",
   {silent = true, noremap = true}
 )
+vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
+  pattern = "*",
+  callback = function()
+    vim.cmd("silent! write")
+  end,
+})

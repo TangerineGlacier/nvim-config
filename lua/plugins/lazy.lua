@@ -22,6 +22,7 @@ require('lazy').setup({
       require("nvim-tree").setup()
     end
   },
+
   { 'echasnovski/mini.nvim', version = false },
   {
     "mhartington/formatter.nvim",
@@ -273,6 +274,7 @@ require('lazy').setup({
     config = function()
       require("noice").setup({
         -- add any options here
+        
         routes = {
           {
             filter = {
