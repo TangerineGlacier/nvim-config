@@ -379,6 +379,23 @@ require('lazy').setup({
       'nvim-treesitter/nvim-treesitter-textobjects',
     }
   },
+  {
+    "epwalsh/obsidian.nvim",
+    version = "*",  -- Use latest version
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",  -- Optional: for completion
+      "nvim-telescope/telescope.nvim",  -- Optional: for searching notes
+    },
+    opts = {
+      workspaces = {
+        {
+          name = "my-notes",
+          path = "~/Documents/ObsidianVault",
+        },
+      },
+    },
+  },  
 
   {
     "rcarriga/nvim-dap-ui",
