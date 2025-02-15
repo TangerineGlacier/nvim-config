@@ -142,4 +142,4 @@ And many more! Check out the configuration files for the full list of plugins an
 - All contributors and community members who offer feedback, bug reports, and feature suggestions.
 - Your support and collaboration drive the continuous improvement of this configuration.
 
-Embrace the journey from VS Code to a powerful.
+Embrace the journey from VS Code to a powerful, efficient Neovim experience with The Tangerine Glacier Nvim Config. .
