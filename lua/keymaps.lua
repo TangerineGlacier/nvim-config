@@ -42,4 +42,3 @@ vim.keymap.set("n", "<leader>ee", "<cmd>GoIfErr<cr>",
 vim.keymap.set("n", "<leader>d", function()
   Snacks.dashboard()
 end, { desc = "Open Dashboard" })
-vim.keymap.set("n", "<D-p>", "<cmd>Telescope find_files<CR>", { silent = true, desc = "Find File" })

@@ -41,6 +41,19 @@ require('lazy').setup({
     },
   },
   {
+  "numToStr/Comment.nvim",
+  opts = {
+    toggler = {
+      --- Line-comment toggle keymap
+      line = "<leader>cc",  -- cmd + /
+      --- Block-comment toggle keymap
+      block = "<leader>bc",
+    },
+  },
+  lazy = false,
+},
+
+  {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
       filesystem = {
@@ -50,7 +63,7 @@ require('lazy').setup({
         },
       },
       window = {
-        position = "right",
+        position = "left",
         mappings = {
           ["J"] = function(state)
             local tree = state.tree
@@ -214,6 +227,7 @@ require('lazy').setup({
       }
     },
     keys = {
+      { "<leader>d", function() Snacks.dashboard() end, desc = "Open Dashboard" },
       { "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
       { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
       { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
