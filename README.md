@@ -5,6 +5,10 @@
 
 The Nvim journey
 
+<img
+src="https://api.deepai.org/job-view-file/1ba287d4-d00b-4b32-b329-3977b078e102/outputs/output.jpg" width=400
+/>
+
 [![Neovim](https://img.shields.io/badge/Neovim%200.8+-green.svg?style=for-the-badge&logo=neovim)](https://neovim.io)
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=for-the-badge&logo=lua)](http://www.lua.org)
 
