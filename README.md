@@ -21,7 +21,9 @@ src="https://api.deepai.org/job-view-file/1ba287d4-d00b-4b32-b329-3977b078e102/o
 - [The Solution](#the-solution)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
+- [Demo Images](#demo-images)
 - [Plugins Used](#plugins-used)
+
 
 ---
 
@@ -85,6 +87,18 @@ Here are a few tips to maximize your experience with this configuration:
 
 ---
 
+## Demo Images
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+![alt text](image-2.png)
+
+The extra taskbar below shown from the images is coming from [tmux](https://github.com/tmux/tmux/wiki/Getting-Started) and has a seperate configuration with [catpuccin-tmux-plugin](https://github.com/catppuccin/tmux)
+
+
+---
 ## Plugins Used
 
 This configuration packs a robust set of plugins, including but not limited to:
@@ -118,5 +132,6 @@ This configuration packs a robust set of plugins, including but not limited to:
 And many more! Check out the configuration files for the full list of plugins and their settings.
 
 ---
+
 
 Embrace the journey from VS Code to a powerful, efficient Neovim experience with **The Tangerine Glacier Nvim Config**. Happy coding, and welcome to a new era of productivity!
