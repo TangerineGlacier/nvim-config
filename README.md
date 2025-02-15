@@ -23,6 +23,7 @@ src="https://api.deepai.org/job-view-file/1ba287d4-d00b-4b32-b329-3977b078e102/o
 - [Getting Started](#getting-started)
 - [Demo Images](#demo-images)
 - [Plugins Used](#plugins-used)
+- [Acknowledgements](#acknowledgements)
 
 
 ---
@@ -133,5 +134,12 @@ And many more! Check out the configuration files for the full list of plugins an
 
 ---
 
+## Acknowledgements
+- Neovim for redefining the code editor experience.
+- Lazy.nvim for providing a seamless plugin management experience.
+- The maintainers of all the integrated plugins whose work has inspired and empowered this configuration.
+- nvim-tangerine for extending the functionality and customization options of this setup.
+- All contributors and community members who offer feedback, bug reports, and feature suggestions.
+- Your support and collaboration drive the continuous improvement of this configuration.
 
-Embrace the journey from VS Code to a powerful, efficient Neovim experience with **The Tangerine Glacier Nvim Config**. Happy coding, and welcome to a new era of productivity!
+Embrace the journey from VS Code to a powerful.
