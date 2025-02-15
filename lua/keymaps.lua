@@ -39,6 +39,4 @@ vim.api.nvim_set_keymap("n", "<leader>nn", ":Noice dismiss<CR>", {noremap=true})
 vim.keymap.set("n", "<leader>ee", "<cmd>GoIfErr<cr>",
   {silent = true, noremap = true}
 )
-vim.keymap.set("n", "<leader>d", function()
-  Snacks.dashboard()
-end, { desc = "Open Dashboard" })
+
