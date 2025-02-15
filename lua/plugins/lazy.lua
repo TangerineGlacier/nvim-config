@@ -384,7 +384,16 @@ require('lazy').setup({
 
   'ray-x/go.nvim',
   'ray-x/guihua.lua',
-  { "catppuccin/nvim", as = "catppuccin" },
+  {
+    "tiagovla/tokyodark.nvim",
+    opts = {
+        -- custom options here
+    },
+    config = function(_, opts)
+        require("tokyodark").setup(opts) -- calling setup is optional
+        vim.cmd [[colorscheme tokyodark]]
+    end,
+  },
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
