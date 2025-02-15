@@ -33,6 +33,16 @@ require('lazy').setup({
     end,
   },
 
+  {
+    "lervag/vimtex",
+    ft = { "tex" },
+    config = function()
+      vim.g.vimtex_view_method = "zathura"  -- Set Zathura as viewer
+      vim.g.vimtex_compiler_method = "latexmk"  -- Use latexmk for compilation
+      vim.g.vimtex_quickfix_mode = 0  -- Disable quickfix auto-popup
+    end
+  },  
+
   { 'echasnovski/mini.nvim', version = false },
   {
     "mhartington/formatter.nvim",

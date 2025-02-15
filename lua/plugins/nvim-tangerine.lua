@@ -134,35 +134,14 @@ local function request_completion()
         local col = cursor[2]
         local suggestion_lines = vim.split(suggestion, "\n", { plain = true })
 
-        -- Use virt_lines if available (Neovim 0.9+), otherwise fall back to multiple extmarks.
-        if vim.fn.has("nvim-0.9") == 1 then
-          local extmark_id = vim.api.nvim_buf_set_extmark(0, ns, row, col, {
-            virt_lines = { suggestion_lines },
-            virt_lines_above = false,
-            hl_mode = "combine",
-          })
-          M.current_suggestion = { extmark_id = extmark_id, missing = suggestion }
-        else
-          local extmark_ids = {}
-          local id = vim.api.nvim_buf_set_extmark(0, ns, row, col, {
-            virt_text = { { suggestion_lines[1], "Comment" } },
-            virt_text_pos = "overlay",
-          })
-          table.insert(extmark_ids, id)
-          local num_lines = vim.api.nvim_buf_line_count(0)
-          for i = 2, #suggestion_lines do
-            local target_row = row + i - 1
-            if target_row >= num_lines then
-              target_row = num_lines - 1
-            end
-            id = vim.api.nvim_buf_set_extmark(0, ns, target_row, 0, {
-              virt_text = { { suggestion_lines[i], "Comment" } },
-              virt_text_pos = "overlay",
-            })
-            table.insert(extmark_ids, id)
-          end
-          M.current_suggestion = { extmark_ids = extmark_ids, missing = suggestion }
-        end
+        -- Instead of using virt_lines, join the suggestion to display inline at end-of-line.
+        local inline_suggestion = table.concat(suggestion_lines, "")
+        local extmark_id = vim.api.nvim_buf_set_extmark(0, ns, row, col, {
+          virt_text = { { inline_suggestion, "Comment" } },
+          virt_text_pos = "eol",
+          hl_mode = "combine",
+        })
+        M.current_suggestion = { extmark_id = extmark_id, missing = suggestion }
       end)
     end,
   })
@@ -205,6 +184,52 @@ end
 --------------------------------------------------------------------------------
 -- Accept the current ghost suggestion and insert its text.
 --------------------------------------------------------------------------------
+-- function M.accept_suggestion()
+--   if not M.current_suggestion then
+--     return vim.api.nvim_replace_termcodes("<C-S-Tab>", true, true, true)
+--   end
+
+--   local suggestion = M.current_suggestion.missing
+--   -- Remove ghost text extmarks
+--   if M.current_suggestion.extmark_ids then
+--     for _, id in ipairs(M.current_suggestion.extmark_ids) do
+--       vim.api.nvim_buf_del_extmark(0, ns, id)
+--     end
+--   elseif M.current_suggestion.extmark_id then
+--     vim.api.nvim_buf_del_extmark(0, ns, M.current_suggestion.extmark_id)
+--   end
+--   M.current_suggestion = nil
+
+--   vim.schedule(function()
+--     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+--     local suggestion_lines = vim.split(suggestion, "\n", { plain = true })
+--     local current_line = vim.api.nvim_get_current_line()
+--     local before_cursor = current_line:sub(1, col)
+--     local after_cursor = current_line:sub(col + 1)
+--     if #suggestion_lines == 1 then
+--       local new_line = before_cursor .. suggestion_lines[1] .. after_cursor
+--       vim.api.nvim_set_current_line(new_line)
+--       vim.api.nvim_win_set_cursor(0, { row, col + #suggestion_lines[1] })
+--     else
+--       -- Insert the first line into the current line.
+--       local first_line = before_cursor .. suggestion_lines[1]
+--       vim.api.nvim_set_current_line(first_line)
+--       -- Insert the remaining lines below.
+--       local new_lines = {}
+--       for i = 2, #suggestion_lines do
+--         table.insert(new_lines, suggestion_lines[i])
+--       end
+--       vim.api.nvim_buf_set_lines(0, row, row, false, new_lines)
+--       local new_cursor_row = row + #suggestion_lines - 1
+--       local new_cursor_line = vim.api.nvim_buf_get_lines(0, new_cursor_row, new_cursor_row + 1, false)[1]
+--       vim.api.nvim_win_set_cursor(0, { new_cursor_row + 1, #new_cursor_line })
+--     end
+--   end)
+
+--   M.ignore_autocomplete_request = true
+--   vim.defer_fn(function() M.ignore_autocomplete_request = false end, 1000)
+--   return ""
+-- end
 function M.accept_suggestion()
   if not M.current_suggestion then
     return vim.api.nvim_replace_termcodes("<C-S-Tab>", true, true, true)
@@ -227,6 +252,18 @@ function M.accept_suggestion()
     local current_line = vim.api.nvim_get_current_line()
     local before_cursor = current_line:sub(1, col)
     local after_cursor = current_line:sub(col + 1)
+
+    -- Define closing delimiters that we want to handle.
+    local closing_chars = { [")"] = true, ['"'] = true, ["'"] = true, ["}"] = true, ["]"] = true }
+    local next_char = after_cursor:sub(1, 1)
+
+    -- If there's a closing delimiter immediately after the cursor
+    -- and the suggestion ends with the same character, remove that trailing delimiter.
+    if closing_chars[next_char] and suggestion:sub(-1) == next_char then
+      suggestion = suggestion:sub(1, -2)
+      suggestion_lines = vim.split(suggestion, "\n", { plain = true })
+    end
+
     if #suggestion_lines == 1 then
       local new_line = before_cursor .. suggestion_lines[1] .. after_cursor
       vim.api.nvim_set_current_line(new_line)
