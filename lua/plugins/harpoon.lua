@@ -26,3 +26,4 @@ end
 vim.keymap.set("n", "<leader>sh", function() toggle_telescope(harpoon:list()) end,
     { desc = "Open harpoon window" })
 
+ 
