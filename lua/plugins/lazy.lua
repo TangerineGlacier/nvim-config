@@ -33,6 +33,14 @@ require('lazy').setup({
     end,
   },
   {
+    "NvChad/nvim-colorizer.lua",
+    opts = {
+      user_default_options = {
+        tailwind = true,
+      },
+    },
+  },
+  {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
       filesystem = {
@@ -265,12 +273,6 @@ require('lazy').setup({
         end,
       })
     end,
-  },
-
-  {
-    "ThePrimeagen/harpoon",
-    branch = "harpoon2",
-    dependencies = { "nvim-lua/plenary.nvim" }
   },
   {
     "mistricky/codesnap.nvim",
