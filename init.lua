@@ -26,6 +26,28 @@ vim.keymap.set("v", "<Down>", "<Esc><Down>", opts)
 -- In Visual mode: map Ctrl+C to copy selection to the clipboard.
 vim.keymap.set("v", "<C-c>", '"+y', opts)
 
+----------------------------------------
+-- Pure Option+Arrow Keys (Wordwise Movement, No Selection)
+----------------------------------------
+-- Normal mode: move wordwise without selection.
+vim.keymap.set("n", "<A-Left>", "b", opts)
+vim.keymap.set("n", "<A-Right>", "w", opts)
+
+-- Visual mode: move wordwise and adjust the selection.
+vim.keymap.set("v", "<A-Left>", "b", opts)
+vim.keymap.set("v", "<A-Right>", "w", opts)
+
+----------------------------------------
+-- Option+Shift+Arrow Keys (Wordwise Selection)
+----------------------------------------
+-- Normal mode: start Visual mode then move wordwise.
+vim.keymap.set("n", "<A-S-Left>", "v<b", opts)
+vim.keymap.set("n", "<A-S-Right>", "v<w", opts)
+
+-- Visual mode: extend selection wordwise.
+vim.keymap.set("v", "<A-S-Left>", "b", opts)
+vim.keymap.set("v", "<A-S-Right>", "w", opts)
+
 
 require('keymaps')
 require('plugins.lazy')
