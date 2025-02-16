@@ -74,6 +74,7 @@ Follow these steps to set up your new Neovim environment:
 
 Here are a few tips to maximize your experience with this configuration:
 
+
 - **Explore the Config:**  
   Browse the Lua modules to understand how each part of the configuration works. Customization is straightforward—tweak and tailor as needed.
 
@@ -83,6 +84,9 @@ Here are a few tips to maximize your experience with this configuration:
 - **Integrated Tools:**  
   Enjoy built-in support for Git management, debugging, LSP, and code formatting. Commands like `:Neogit` and `:Format` are set up for instant use.
 
+- **Getting the Pokemon's to come into snacks**:
+  To get the pokemon's to come to the dashboard welcome screen you are required to use "pokemon-scripts". You can clone this [gitlab repo](https://gitlab.com/phoneybadger/pokemon-colorscripts). You can put any pokemon yoyou feel like or randomize it to your liking.
+  
 - **Plugin Ecosystem:**  
   From file explorers to fuzzy finders and code snippet managers, each plugin is configured to enhance your productivity without overwhelming you.
 
