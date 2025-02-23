@@ -42,3 +42,4 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", "<leader>e", "<cmd>GoIfErr<cr>", { silent = true, noremap = true })
   end,
 })
+vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', { noremap = true, silent = true })
