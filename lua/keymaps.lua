@@ -42,4 +42,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", "<leader>e", "<cmd>GoIfErr<cr>", { silent = true, noremap = true })
   end,
 })
-vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', { noremap = true, silent = true })
+-- vim.keymap.set("n", "<D-p>", ":NvimTreeToggle<CR>", { silent = true, noremap = true })
+vim.keymap.set("n", "<D-p>", ":Telescope find_files<CR>", { silent = true, noremap = true })
+
+vim.keymap.set('n', '<leader>l', ':Lazy<CR>', { noremap = true, silent = true })
