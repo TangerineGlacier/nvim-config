@@ -26,27 +26,30 @@ vim.keymap.set("n", "<leader>qq", ":q<CR>",
 )
 -- split terminal 
 
--- Define a global toggle function for the terminal
-function _G.toggle_terminal()
-  local term_found = false
-  -- Loop over all windows to check for a terminal buffer
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    if vim.api.nvim_buf_get_option(buf, 'buftype') == 'terminal' then
-      term_found = true
-      vim.api.nvim_win_close(win, true)
-      break
-    end
-  end
-  -- If no terminal was found, open one at the bottom
-  if not term_found then
-    vim.cmd("belowright split | terminal")
+local terminal_buf = nil  -- Store terminal buffer ID
+
+function ToggleTerminal()
+  if terminal_buf and vim.api.nvim_buf_is_valid(terminal_buf) then
+    -- If terminal is open, close it
+    vim.api.nvim_command("bd! " .. terminal_buf)
+    terminal_buf = nil
+  else
+    -- If terminal is closed, reopen it
+    vim.api.nvim_command("belowright split | terminal")
+    terminal_buf = vim.api.nvim_get_current_buf()
   end
 end
 
--- Map Ctrl+` in Normal and Terminal modes to toggle the terminal
-vim.api.nvim_set_keymap('n', '<C-`>', ':lua toggle_terminal()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('t', '<C-`>', '<C-\\><C-n>:lua toggle_terminal()<CR>', { noremap = true, silent = true })
+function NewTerminal()
+  vim.api.nvim_command("belowright split | terminal")
+  terminal_buf = vim.api.nvim_get_current_buf()  -- Update to last opened terminal
+end
+
+-- Keymaps
+vim.api.nvim_set_keymap('n', '<C-`>', ':lua ToggleTerminal()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-`>', '<C-\\><C-n>:lua ToggleTerminal()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-S-`>', ':lua NewTerminal()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-S-`>', '<C-\\><C-n>:lua NewTerminal()<CR>', { noremap = true, silent = true })
 
 
 -- Keymaps for better default experience
