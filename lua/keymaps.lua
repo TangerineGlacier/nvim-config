@@ -24,6 +24,30 @@ vim.keymap.set('n', '<space><space>', "<cmd>set nohlsearch<CR>")
 vim.keymap.set("n", "<leader>qq", ":q<CR>",
   {silent = true, noremap = true}
 )
+-- split terminal 
+
+-- Define a global toggle function for the terminal
+function _G.toggle_terminal()
+  local term_found = false
+  -- Loop over all windows to check for a terminal buffer
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.api.nvim_buf_get_option(buf, 'buftype') == 'terminal' then
+      term_found = true
+      vim.api.nvim_win_close(win, true)
+      break
+    end
+  end
+  -- If no terminal was found, open one at the bottom
+  if not term_found then
+    vim.cmd("belowright split | terminal")
+  end
+end
+
+-- Map Ctrl+` in Normal and Terminal modes to toggle the terminal
+vim.api.nvim_set_keymap('n', '<C-`>', ':lua toggle_terminal()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-`>', '<C-\\><C-n>:lua toggle_terminal()<CR>', { noremap = true, silent = true })
+
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
