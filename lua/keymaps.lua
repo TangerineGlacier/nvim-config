@@ -51,6 +51,11 @@ vim.api.nvim_set_keymap('t', '<C-`>', '<C-\\><C-n>:lua ToggleTerminal()<CR>', { 
 vim.api.nvim_set_keymap('n', '<C-S-`>', ':lua NewTerminal()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('t', '<C-S-`>', '<C-\\><C-n>:lua NewTerminal()<CR>', { noremap = true, silent = true })
 
+-- Swap between files
+vim.keymap.set("n", "<C-A-D-Right>", ":bnext<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-A-D-Left>", ":bprevious<CR>", { noremap = true, silent = true })
+
+
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
