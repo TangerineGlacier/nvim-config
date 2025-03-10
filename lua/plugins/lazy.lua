@@ -33,20 +33,6 @@ require('lazy').setup({
     end,
   },
   {
-  "lervag/vimtex",
-  config = function()
-    -- Set your preferred PDF viewer. For example, using Zathura:
-    vim.g.vimtex_view_method = 'zathura'
-
-    -- Use latexmk for compilation
-    vim.g.vimtex_compiler_method = 'latexmk'
-    
-    -- Additional vimtex settings can be added here:
-    vim.g.vimtex_quickfix_mode = 0  -- disable quickfix if you prefer
-  end,
-},
-
-  {
     "NvChad/nvim-colorizer.lua",
     opts = {
       user_default_options = {
