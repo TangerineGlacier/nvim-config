@@ -2,6 +2,10 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 -- Use the system clipboard for all yank, delete, change, and put operations
 vim.opt.clipboard = "unnamedplus"
+vim.o.mouse = "a"
+vim.o.termguicolors = true -- Better color support in terminal
+vim.o.splitright = true -- Open vertical splits to the right
+vim.o.splitbelow = true -- Open horizontal splits below
 
 local opts = { noremap = true, silent = true }
 
