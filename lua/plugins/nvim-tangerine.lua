@@ -43,21 +43,22 @@ end
 
 --------------------------------------------------------------------------------
 -- Request a code completion from the Ollama endpoint.
+-- Optimized to send a smaller context window for faster completions.
 --------------------------------------------------------------------------------
 local function request_completion()
   local buf = vim.api.nvim_get_current_buf()
   local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
   local cursor = vim.api.nvim_win_get_cursor(0)
-  local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+  local current_row = cursor[1]
+  -- Get a window of context: 50 lines before and 10 lines after the current line.
+  local start_line = math.max(current_row - 50, 0)
+  local end_line = current_row + 10
+  local lines = vim.api.nvim_buf_get_lines(buf, start_line, end_line, false)
   local context = table.concat(lines, "\n")
 
   local prompt = string.format(
-    "Complete the current line of %s code at cursor position %d:%d. " ..
-    "Understand the whole code and give a valid code completion. " ..
-    "Return ONLY the missing text to append to the current line. " ..
-    "Do not provide multiple options, any commentary, or additional formatting. " ..
-    "Do not enclose your code completion in any quotes or other delimiters. " ..
-    "Output nothing but the exact code snippet.\n\n%s",
+    "Filetype: %s\nCursor: %d:%d\n\nComplete the code by appending only the missing text that maintains syntactic correctness. " ..
+    "Do not include any commentary or extra formatting. Use the following code context for reference:\n\n%s",
     filetype, cursor[1], cursor[2], context
   )
 
@@ -97,7 +98,7 @@ local function request_completion()
     on_exit = function(_, exit_code, _)
       vim.schedule(function()
         if exit_code ~= 0 then return end
-        vim.notify("tangerine activated..", vim.log.levels.INFO)
+        vim.notify("tangerine activated...", vim.log.levels.INFO)
 
         local raw_response = table.concat(output_lines, "\n")
         raw_response = raw_response:gsub("^%s+", ""):gsub("%s+$", "")
@@ -134,7 +135,7 @@ local function request_completion()
         local col = cursor[2]
         local suggestion_lines = vim.split(suggestion, "\n", { plain = true })
 
-        -- Instead of using virt_lines, join the suggestion to display inline at end-of-line.
+        -- Display inline suggestion at end-of-line.
         local inline_suggestion = table.concat(suggestion_lines, "")
         local extmark_id = vim.api.nvim_buf_set_extmark(0, ns, row, col, {
           virt_text = { { inline_suggestion, "Comment" } },
@@ -184,52 +185,6 @@ end
 --------------------------------------------------------------------------------
 -- Accept the current ghost suggestion and insert its text.
 --------------------------------------------------------------------------------
--- function M.accept_suggestion()
---   if not M.current_suggestion then
---     return vim.api.nvim_replace_termcodes("<C-S-Tab>", true, true, true)
---   end
-
---   local suggestion = M.current_suggestion.missing
---   -- Remove ghost text extmarks
---   if M.current_suggestion.extmark_ids then
---     for _, id in ipairs(M.current_suggestion.extmark_ids) do
---       vim.api.nvim_buf_del_extmark(0, ns, id)
---     end
---   elseif M.current_suggestion.extmark_id then
---     vim.api.nvim_buf_del_extmark(0, ns, M.current_suggestion.extmark_id)
---   end
---   M.current_suggestion = nil
-
---   vim.schedule(function()
---     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
---     local suggestion_lines = vim.split(suggestion, "\n", { plain = true })
---     local current_line = vim.api.nvim_get_current_line()
---     local before_cursor = current_line:sub(1, col)
---     local after_cursor = current_line:sub(col + 1)
---     if #suggestion_lines == 1 then
---       local new_line = before_cursor .. suggestion_lines[1] .. after_cursor
---       vim.api.nvim_set_current_line(new_line)
---       vim.api.nvim_win_set_cursor(0, { row, col + #suggestion_lines[1] })
---     else
---       -- Insert the first line into the current line.
---       local first_line = before_cursor .. suggestion_lines[1]
---       vim.api.nvim_set_current_line(first_line)
---       -- Insert the remaining lines below.
---       local new_lines = {}
---       for i = 2, #suggestion_lines do
---         table.insert(new_lines, suggestion_lines[i])
---       end
---       vim.api.nvim_buf_set_lines(0, row, row, false, new_lines)
---       local new_cursor_row = row + #suggestion_lines - 1
---       local new_cursor_line = vim.api.nvim_buf_get_lines(0, new_cursor_row, new_cursor_row + 1, false)[1]
---       vim.api.nvim_win_set_cursor(0, { new_cursor_row + 1, #new_cursor_line })
---     end
---   end)
-
---   M.ignore_autocomplete_request = true
---   vim.defer_fn(function() M.ignore_autocomplete_request = false end, 1000)
---   return ""
--- end
 function M.accept_suggestion()
   if not M.current_suggestion then
     return vim.api.nvim_replace_termcodes("<C-S-Tab>", true, true, true)
@@ -702,4 +657,3 @@ function M.setup()
 end
 
 return M
-
