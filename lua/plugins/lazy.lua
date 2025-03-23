@@ -138,7 +138,10 @@ require('lazy').setup({
       vim.g.vimtex_quickfix_mode = 0  -- Disable quickfix auto-popup
     end
   },  
-
+  {
+    "ThePrimeagen/vim-be-good",
+    cmd = "VimBeGood" -- Loads only when you run :VimBeGood
+  },
   { 'echasnovski/mini.nvim', version = false },
   {
     "mhartington/formatter.nvim",
