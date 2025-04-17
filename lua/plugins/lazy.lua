@@ -591,35 +591,6 @@ require('lazy').setup({
     }
   },
   {
-    'nvim-telescope/telescope.nvim',
-    branch = '0.1.x', -- or whichever branch/version you prefer
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    config = function()
-      local telescope = require('telescope')
-      telescope.setup{
-        defaults = {
-          prompt_prefix = "🔍 ",
-          selection_caret = " ",
-          path_display = { "smart" },
-        },
-        pickers = {
-          find_files = {
-            -- picker-specific options here.
-          },
-        },
-        extensions = {
-          -- Your extensions configuration.
-        },
-      }
-  
-      -- Map Cmd+P to open Telescope's find_files (only works in GUI clients)
-      vim.keymap.set("n", "<C-P>", ":Telescope find_files<CR>", { noremap = true, silent = true })
-  
-      -- Optionally, load Telescope extensions.
-      -- telescope.load_extension('fzf')
-    end,
-  },  
-  {
     "epwalsh/obsidian.nvim",
     version = "*",  -- Use latest version
     dependencies = {
@@ -671,4 +642,5 @@ require('lazy').setup({
       -- refer to the configuration section below
     }
   },
+  require('plugins.telescope'),
 })
