@@ -16,6 +16,7 @@ vim.opt.rtp:prepend(lazypath)
 vim.o.termguicolors = true
 
 require('lazy').setup({
+
   {
     'nvim-tree/nvim-tree.lua',
     dependencies = {
@@ -63,88 +64,146 @@ require('lazy').setup({
   }
 },
   {
-    "nvim-neo-tree/neo-tree.nvim",
-    opts = {
-      filesystem = {
-        filtered_items = {
-          hide_dotfiles = false,
-          hide_gitignored = false,
-        },
-      },
-      window = {
-        position = "left",
-        mappings = {
-          ["J"] = function(state)
-            local tree = state.tree
-            local node = tree:get_node()
-            local siblings = tree:get_nodes(node:get_parent_id())
-            local renderer = require("neo-tree.ui.renderer")
-            renderer.focus_node(state, siblings[#siblings]:get_id())
-          end,
-          ["K"] = function(state)
-            local tree = state.tree
-            local node = tree:get_node()
-            local siblings = tree:get_nodes(node:get_parent_id())
-            local renderer = require("neo-tree.ui.renderer")
-            renderer.focus_node(state, siblings[1]:get_id())
-          end,
-        },
-      },
-      sort_function = function(a, b)
-        -- Simplified check if a path is in the 'notes' directory
-        local function is_in_notes_directory(path)
-          return string.match(path, "/notes/") or string.match(path, "^notes/")
-        end
-
-        -- Get the modification time of a file
-        local function get_mod_time(path)
-          local attributes = vim.loop.fs_stat(path)
-          return attributes and attributes.mtime.sec or 0
-        end
-
-        -- Prioritize directories over files
-        if a.type ~= b.type then
-          return a.type == "directory"
-        end
-
-        local a_in_notes = is_in_notes_directory(a.path)
-        local b_in_notes = is_in_notes_directory(b.path)
-
-        -- If both nodes are files in 'notes' directories, sort by modification time
-        if a_in_notes and b_in_notes and a.type ~= "directory" and b.type ~= "directory" then
-          return get_mod_time(a.path) > get_mod_time(b.path)
-        end
-
-        -- Default sort by name, assuming `name` property or similar is available
-        -- You might need to extract the name from `a.path` and `b.path` if direct comparison is needed
-        local a_name = a.path:match("^.+/(.+)$") or a.path
-        local b_name = b.path:match("^.+/(.+)$") or b.path
-        return a_name < b_name
-      end,
-    },
+    "rcarriga/nvim-notify",
+    config = function()
+      require("notify").setup({
+        stages = "fade_in_slide_out",
+        timeout = 3000,
+        background_colour = "#000000",
+      })
+      vim.notify = require("notify")
+    end,
   },
-  
   {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       local harpoon = require("harpoon")
-      harpoon:setup()
+      harpoon:setup({
+        settings = {
+          save_on_toggle = true,
+          sync_on_ui_close = true,
+          key = function()
+            return vim.loop.cwd()
+          end,
+        }
+      })
 
       -- Basic keybindings
-      vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end, { desc = "Add file to harpoon" })
-      vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Open harpoon menu" })
+      vim.keymap.set("n", "<leader>m", function() 
+        local current_file = vim.api.nvim_buf_get_name(0)
+        if current_file ~= "" then
+          harpoon:list():append(current_file)
+          vim.notify("Harpoon: File marked: " .. vim.fn.fnamemodify(current_file, ":t"), vim.log.levels.INFO)
+        else
+          vim.notify("Harpoon: No file to mark", vim.log.levels.WARN)
+        end
+      end, { desc = "Add file to harpoon" })
+      
+      vim.keymap.set("n", "<leader>h", function() 
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end, { desc = "Open harpoon menu" })
 
       -- Quick access to marked files
-      vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end, { desc = "Go to harpoon file 1" })
-      vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end, { desc = "Go to harpoon file 2" })
-      vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end, { desc = "Go to harpoon file 3" })
-      vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end, { desc = "Go to harpoon file 4" })
+      vim.keymap.set("n", "<leader>1", function() 
+        local list = harpoon:list()
+        if list:length() >= 1 then
+          local item = list:get(1)
+          if item then
+            vim.cmd("edit " .. item)
+            vim.notify("Harpoon: Jumped to file 1", vim.log.levels.INFO)
+          end
+        else
+          vim.notify("Harpoon: No file marked at position 1", vim.log.levels.WARN)
+        end
+      end, { desc = "Go to harpoon file 1" })
+      
+      vim.keymap.set("n", "<leader>2", function() 
+        local list = harpoon:list()
+        if list:length() >= 2 then
+          local item = list:get(2)
+          if item then
+            vim.cmd("edit " .. item)
+            vim.notify("Harpoon: Jumped to file 2", vim.log.levels.INFO)
+          end
+        else
+          vim.notify("Harpoon: No file marked at position 2", vim.log.levels.WARN)
+        end
+      end, { desc = "Go to harpoon file 2" })
+      
+      vim.keymap.set("n", "<leader>3", function() 
+        local list = harpoon:list()
+        if list:length() >= 3 then
+          local item = list:get(3)
+          if item then
+            vim.cmd("edit " .. item)
+            vim.notify("Harpoon: Jumped to file 3", vim.log.levels.INFO)
+          end
+        else
+          vim.notify("Harpoon: No file marked at position 3", vim.log.levels.WARN)
+        end
+      end, { desc = "Go to harpoon file 3" })
+      
+      vim.keymap.set("n", "<leader>4", function() 
+        local list = harpoon:list()
+        if list:length() >= 4 then
+          local item = list:get(4)
+          if item then
+            vim.cmd("edit " .. item)
+            vim.notify("Harpoon: Jumped to file 4", vim.log.levels.INFO)
+          end
+        else
+          vim.notify("Harpoon: No file marked at position 4", vim.log.levels.WARN)
+        end
+      end, { desc = "Go to harpoon file 4" })
 
       -- Navigation between marked files
-      vim.keymap.set("n", "<leader>n", function() harpoon:list():next() end, { desc = "Go to next harpoon file" })
-      vim.keymap.set("n", "<leader>p", function() harpoon:list():prev() end, { desc = "Go to previous harpoon file" })
+      vim.keymap.set("n", "<leader>n", function() 
+        local list = harpoon:list()
+        if list:length() > 0 then
+          local current = list:get_current_index()
+          if current then
+            local next_index = (current % list:length()) + 1
+            local item = list:get(next_index)
+            if item then
+              vim.cmd("edit " .. item)
+              vim.notify("Harpoon: Next file", vim.log.levels.INFO)
+            end
+          else
+            local item = list:get(1)
+            if item then
+              vim.cmd("edit " .. item)
+              vim.notify("Harpoon: First file", vim.log.levels.INFO)
+            end
+          end
+        else
+          vim.notify("Harpoon: No files marked", vim.log.levels.WARN)
+        end
+      end, { desc = "Go to next harpoon file" })
+      
+      vim.keymap.set("n", "<leader>p", function() 
+        local list = harpoon:list()
+        if list:length() > 0 then
+          local current = list:get_current_index()
+          if current then
+            local prev_index = current == 1 and list:length() or current - 1
+            local item = list:get(prev_index)
+            if item then
+              vim.cmd("edit " .. item)
+              vim.notify("Harpoon: Previous file", vim.log.levels.INFO)
+            end
+          else
+            local item = list:get(list:length())
+            if item then
+              vim.cmd("edit " .. item)
+              vim.notify("Harpoon: Last file", vim.log.levels.INFO)
+            end
+          end
+        else
+          vim.notify("Harpoon: No files marked", vim.log.levels.WARN)
+        end
+      end, { desc = "Go to previous harpoon file" })
     end,
   },
   {
@@ -325,6 +384,13 @@ require('lazy').setup({
   {
     "mistricky/codesnap.nvim",
     build = "make",
+    config = function()
+      require("codesnap").setup({
+        -- Add any custom configuration here
+      })
+    end,
+    -- Force a clean installation
+    force = true,
   },
   {
     "NeogitOrg/neogit",
