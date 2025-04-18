@@ -57,7 +57,18 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'ts_ls', 'gopls'  }
+local servers = { 
+  'clangd', 
+  'rust_analyzer', 
+  'pyright', 
+  'ts_ls',
+  'jsonls',
+  'golangci_lint_ls',
+  'html',      -- HTML
+  'gopls',
+  'tailwindcss', -- Tailwind CSS
+  'eslint'     -- ESLint
+}
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -68,11 +79,53 @@ require('mason-lspconfig').setup {
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
+-- Setup LSP configurations
 for _, lsp in ipairs(servers) do
-  require('lspconfig')[lsp].setup {
+  local config = {
     on_attach = on_attach,
     capabilities = capabilities,
   }
+
+  -- Add specific configurations for certain servers
+  if lsp == 'tsserver' then
+    config.filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' }
+    config.cmd = { 'typescript-language-server', '--stdio' }
+  elseif lsp == 'html' then
+    config.filetypes = { 'html', 'javascriptreact', 'typescriptreact' }
+  elseif lsp == 'tailwindcss' then
+    config.filetypes = { 'html', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'css' }
+  elseif lsp == 'eslint' then
+    config.filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' }
+    config.settings = {
+      codeAction = {
+        disableRuleComment = {
+          enable = true,
+          location = "separateLine"
+        },
+        showDocumentation = {
+          enable = true
+        }
+      },
+      codeActionOnSave = {
+        enable = true,
+        mode = "all"
+      },
+      format = true,
+      nodePath = "",
+      onIgnoredFiles = "off",
+      packageManager = "npm",
+      quiet = false,
+      rulesCustomizations = {},
+      run = "onType",
+      useESLintClass = false,
+      validate = "on",
+      workingDirectory = {
+        mode = "location"
+      }
+    }
+  end
+
+  require('lspconfig')[lsp].setup(config)
 end
 
 -- Turn on lsp status information
@@ -108,6 +161,7 @@ require('lspconfig').lua_ls.setup {
     },
   },
 }
+
 vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { silent = true, noremap = true })
 
 vim.api.nvim_create_autocmd('FileType', {

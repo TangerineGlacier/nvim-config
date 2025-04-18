@@ -619,7 +619,13 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'lewis6991/gitsigns.nvim',
 
-  'nvim-lualine/lualine.nvim', -- Fancier statusline
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('plugins.lualine')
+    end,
+  },
   { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
   -- {
   --   'numToStr/Comment.nvim', -- "gc" to comment visual regions/lines 
@@ -643,4 +649,26 @@ require('lazy').setup({
     }
   },
   require('plugins.telescope'),
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    config = function()
+      require("nvim-autopairs").setup({
+        check_ts = true,
+        ts_config = {
+          javascript = { "template_string" },
+          typescript = { "template_string" },
+          javascriptreact = { "template_string" },
+          typescriptreact = { "template_string" },
+        },
+      })
+    end,
+  },
+  {
+    "windwp/nvim-ts-autotag",
+    ft = { "html", "javascript", "javascriptreact", "typescript", "typescriptreact" },
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
+  },
 })
