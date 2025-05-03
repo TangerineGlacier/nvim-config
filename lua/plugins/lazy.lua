@@ -18,19 +18,26 @@ vim.o.termguicolors = true
 require('lazy').setup({
 
   {
-    'nvim-tree/nvim-tree.lua',
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = "v3.x",
     dependencies = {
-      'nvim-tree/nvim-web-devicons', -- Optional: for file icons
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons',
+      'MunifTanjim/nui.nvim',
     },
     config = function()
-      require("nvim-tree").setup {
-        -- Add any custom nvim-tree settings here.
-        update_focused_file = { enable = true },
-        view = {
+      require('neo-tree').setup({
+        close_if_last_window = true,
+        window = {
           width = 30,
-          side = 'left',
+          mappings = {
+            ['<space>e'] = 'close_window',
+          },
         },
-      }
+      })
+      vim.keymap.set('n', '<space>e', function()
+        require('neo-tree.command').execute({ toggle = true })
+      end, { desc = 'Toggle Neotree' })
     end,
   },
   {
@@ -503,11 +510,11 @@ require('lazy').setup({
   {
     "tiagovla/tokyodark.nvim",
     opts = {
-        -- custom options here
+      transparent_background = true,
     },
     config = function(_, opts)
-        require("tokyodark").setup(opts) -- calling setup is optional
-        vim.cmd [[colorscheme tokyodark]]
+      require("tokyodark").setup(opts)
+      vim.cmd("colorscheme tokyodark")
     end,
   },
   { -- LSP Configuration & Plugins
@@ -607,7 +614,59 @@ require('lazy').setup({
       },
     },
   },  
-
+  {
+    "sphamba/smear-cursor.nvim",
+    opts = {},
+  } ,
+   {
+    "stevearc/conform.nvim",
+    event = { "BufWritePre" },
+    cmd = { "ConformInfo" },
+    keys = {
+      {
+        "<leader>f",
+        function()
+          require("conform").format({ async = true, lsp_fallback = true })
+        end,
+        mode = "",
+        desc = "[F]ormat buffer",
+      },
+    },
+    opts = {
+      formatters_by_ft = {
+        javascript = { "prettier" },
+        javascriptreact = { "prettier" },
+        typescript = { "prettier" },
+        typescriptreact = { "prettier" },
+        css = { "prettier" },
+        html = { "prettier" },
+        json = { "prettier" },
+        jsonc = { "prettier" },
+        yaml = { "prettier" },
+        markdown = { "prettier" },
+        python = { "black", "isort" },
+        lua = { "stylua" },
+        sh = { "shfmt" },
+        go = { "gofmt", "goimports" },
+        rust = { "rustfmt" },
+      },
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_fallback = true,
+      },
+      formatters = {
+        prettier = {
+          prepend_args = { "--single-quote", "--jsx-single-quote" },
+        },
+        black = {
+          prepend_args = { "--line-length", "88" },
+        },
+        isort = {
+          prepend_args = { "--profile", "black" },
+        },
+      },
+    },
+  },
   {
     "rcarriga/nvim-dap-ui",
     dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"}
@@ -670,5 +729,50 @@ require('lazy').setup({
     config = function()
       require("nvim-ts-autotag").setup()
     end,
+  },
+  {
+    "folke/zen-mode.nvim",
+    opts = {
+      window = {
+        backdrop = 0.95, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
+        -- height and width can be:
+        -- * an absolute number of cells when > 1
+        -- * a percentage of the width/height of the editor when <= 1
+        -- * a function that returns the width or the height
+        width = 120, -- width of the Zen window
+        height = 1, -- height of the Zen window
+        -- by default, no options are changed for the Zen window
+        -- uncomment any of the options below, or add other vim.wo options you want to apply
+        options = {
+          signcolumn = "no", -- disable signcolumn
+          number = false, -- disable number column
+          relativenumber = false, -- disable relative numbers
+          cursorline = false, -- disable cursorline
+          cursorcolumn = false, -- disable cursor column
+          foldcolumn = "0", -- disable fold column
+          list = false, -- disable whitespace characters
+        },
+      },
+      plugins = {
+        -- disable some global vim options (vim.o...)
+        -- comment the lines to not apply the options
+        options = {
+          enabled = true,
+          ruler = false, -- disables the ruler text in the cmd line area
+          showcmd = false, -- disables the command in the last line of the screen
+        },
+        twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
+        gitsigns = { enabled = false }, -- disables git signs
+        tmux = { enabled = false }, -- disables the tmux statusline
+        -- this will change the font size on kitty when in zen mode
+        -- to make this work, you need to set the following kitty options:
+        -- - allow_remote_control socket-only
+        -- - listen_on unix:/tmp/kitty
+        kitty = {
+          enabled = false,
+          font = "+4", -- font size increment
+        },
+      },
+    },
   },
 })

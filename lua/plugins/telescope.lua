@@ -28,16 +28,25 @@ return {
             '--smart-case',
             '--hidden',
             '--glob=!.git/',
+            '--glob=!node_modules/',
           },
         },
         pickers = {
           find_files = {
             hidden = true,
             no_ignore = true,
+            find_command = {
+              'rg',
+              '--files',
+              '--hidden',
+              '--glob=!.git/',
+              '--glob=!node_modules/',
+              '--glob=!.venv/'
+            },
           },
           live_grep = {
             additional_args = function()
-              return { "--hidden", "--glob=!.git/" }
+              return { "--hidden", "--glob=!.git/", "--glob=!node_modules/" }
             end,
           },
         },
@@ -47,7 +56,7 @@ return {
       pcall(telescope.load_extension, 'fzf')
 
       -- Keybindings
-      vim.keymap.set('n', '<D-p>', builtin.find_files, { desc = 'Find files' })
+      vim.keymap.set('n', '<D-S-P>', builtin.find_files, { desc = 'Find files' })
       vim.keymap.set('n', '<D-F>', builtin.live_grep, { desc = 'Live grep' })
       vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find files' })
       vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live grep' })
