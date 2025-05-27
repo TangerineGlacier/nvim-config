@@ -61,26 +61,16 @@ require('lazy').setup({
   lazy = false,
 },
 {
-  "rest-nvim/rest.nvim",
-  dependencies = {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function (_, opts)
-      opts.ensure_installed = opts.ensure_installed or {}
-      table.insert(opts.ensure_installed, "http")
-    end,
-  }
+  "rcarriga/nvim-notify",
+  config = function()
+    require("notify").setup({
+      stages = "fade_in_slide_out",
+      timeout = 3000,
+      background_colour = "#000000",
+    })
+    vim.notify = require("notify")
+  end,
 },
-  {
-    "rcarriga/nvim-notify",
-    config = function()
-      require("notify").setup({
-        stages = "fade_in_slide_out",
-        timeout = 3000,
-        background_colour = "#000000",
-      })
-      vim.notify = require("notify")
-    end,
-  },
   {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
