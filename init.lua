@@ -76,3 +76,10 @@ require('plugins.obsidian')
 require('plugins.prettier')
 require('plugins.harpoon')
 require('plugins.highlights')
+
+-- Auto-save when leaving insert mode
+vim.api.nvim_create_autocmd("InsertLeave", {
+    pattern = "*",
+    command = "silent! write",
+    group = vim.api.nvim_create_augroup("AutoSave", { clear = true })
+})

@@ -9,7 +9,26 @@ local function filename_no_ext()
 end
 
 -- Define the snippet for both javascriptreact and typescriptreact filetypes.
-ls.add_snippets({ "javascriptreact", "typescriptreact" }, {
+ls.add_snippets("javascriptreact", {
+  s("rafce", {
+    t("import React from 'react'"),
+    t({ "", "" }),
+    t("const "),
+    f(filename_no_ext, {}),  -- use current file name for the component name
+    t(" = () => {"),
+    t({ "", "  return (" }),
+    t({ "", "    <div>" }),
+    f(filename_no_ext, {}),
+    t("</div>"),
+    t({ "", "  )" }),
+    t({ "", "}" }),
+    t({ "", "" }),
+    t("export default "),
+    f(filename_no_ext, {}),
+  }),
+})
+
+ls.add_snippets("typescriptreact", {
   s("rafce", {
     t("import React from 'react'"),
     t({ "", "" }),
