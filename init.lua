@@ -74,8 +74,9 @@ require('plugins.mini')
 require("snippets.react")
 require('plugins.obsidian')
 require('plugins.prettier')
-require('plugins.harpoon')
+
 require('plugins.highlights')
+require('plugins.harpoon')
 
 -- Auto-save when leaving insert mode
 vim.api.nvim_create_autocmd("InsertLeave", {
