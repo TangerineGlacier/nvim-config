@@ -61,5 +61,21 @@ return {
     -- Keep the menu toggle for reference
     vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Toggle harpoon quick menu" })
     vim.keymap.set("n", "<leader>p", function() toggle_telescope(harpoon:list()) end, { desc = "Open harpoon window" })
+
+    -- Keymap to unmark the current file
+    vim.keymap.set("n", "<leader>mu", function()
+      local harpoon = require("harpoon")
+      local list = harpoon:list()
+      local current_file = vim.fn.expand("%:p")
+      local current_real = vim.loop.fs_realpath(current_file)
+      for i, item in ipairs(list.items) do
+        if vim.loop.fs_realpath(item.value) == current_real then
+          list:remove_at(i)
+          vim.notify("Harpoon unmarked: " .. vim.fn.fnamemodify(current_file, ":t"), vim.log.levels.INFO, { title = "Harpoon" })
+          return
+        end
+      end
+      vim.notify("File not found in Harpoon list", vim.log.levels.WARN, { title = "Harpoon" })
+    end, { desc = "Unmark current file from Harpoon" })
   end,
 } 
