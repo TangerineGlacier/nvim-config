@@ -86,69 +86,7 @@ require('lazy').setup({
     cmd = "VimBeGood" -- Loads only when you run :VimBeGood
   },
   { 'echasnovski/mini.nvim', version = false },
-  {
-    "mhartington/formatter.nvim",
-    config = function()
-      require("formatter").setup({
-        logging = false,  -- Enable if you need debugging
-        filetype = {
-          python = {
-            -- Format Python files with Black
-            function()
-              return {
-                exe = "black",         -- Make sure Black is installed: pip install black
-                args = {"--quiet", "-"},-- Use '-' to read from stdin
-                stdin = true,
-              }
-            end,
-          },
-          json = {
-            -- Format JSON files with Prettier
-            function()
-              return {
-                exe = "prettier",      -- Make sure Prettier is installed: npm install -g prettier
-                args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0)},
-                stdin = true,
-              }
-            end,
-          },
-          javascript = {
-            -- Format JavaScript files with Prettier
-            function()
-              return {
-                exe = "prettier",
-                args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0)},
-                stdin = true,
-              }
-            end,
-          },
-          typescript = {
-            -- Format TypeScript files with Prettier
-            function()
-              return {
-                exe = "prettier",
-                args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0)},
-                stdin = true,
-              }
-            end,
-          },
-          go = {
-            -- Format Go files with gofmt
-            function()
-              return {
-                exe = "gofmt",
-                args = {},
-                stdin = true,
-              }
-            end,
-          },
-        },
-      })
-
-      -- Map Option+Shift+F (as <A-F>) to run the formatter
-      vim.keymap.set("n", "<A-F>", ":Format<CR>", { noremap = true, silent = true })
-    end,
-  },
+  { 'vuciv/golf' },
   {
     "folke/snacks.nvim",
     priority = 1000,
@@ -503,7 +441,6 @@ require('lazy').setup({
         jsonc = { "prettier" },
         yaml = { "prettier" },
         markdown = { "prettier" },
-        python = { "black", "isort" },
         lua = { "stylua" },
         sh = { "shfmt" },
         go = { "gofmt", "goimports" },
@@ -516,12 +453,6 @@ require('lazy').setup({
       formatters = {
         prettier = {
           prepend_args = { "--single-quote", "--jsx-single-quote" },
-        },
-        black = {
-          prepend_args = { "--line-length", "88" },
-        },
-        isort = {
-          prepend_args = { "--profile", "black" },
         },
       },
     },

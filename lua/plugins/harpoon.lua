@@ -47,6 +47,7 @@ return {
     vim.keymap.set("n", "<leader>m6", function() mark_file(6) end, { desc = "Mark file as 6" })
     vim.keymap.set("n", "<leader>m7", function() mark_file(7) end, { desc = "Mark file as 7" })
     vim.keymap.set("n", "<leader>m8", function() mark_file(8) end, { desc = "Mark file as 8" })
+    vim.keymap.set("n", "<leader>m9", function() mark_file(9) end, { desc = "Mark file as 9" })
 
     
     -- Keymaps for jumping to marked files (using leader)
@@ -58,6 +59,7 @@ return {
     vim.keymap.set("n", "<leader>6", function() harpoon:list():select(6) end, { desc = "Go to harpoon file 6" })
     vim.keymap.set("n", "<leader>7", function() harpoon:list():select(7) end, { desc = "Go to harpoon file 7" })
     vim.keymap.set("n", "<leader>8", function() harpoon:list():select(8) end, { desc = "Go to harpoon file 8" })
+    vim.keymap.set("n", "<leader>9", function() harpoon:list():select(9) end, { desc = "Go to harpoon file 9" })
     -- Keep the menu toggle for reference
     vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Toggle harpoon quick menu" })
     vim.keymap.set("n", "<leader>p", function() toggle_telescope(harpoon:list()) end, { desc = "Open harpoon window" })
@@ -77,5 +79,13 @@ return {
       end
       vim.notify("File not found in Harpoon list", vim.log.levels.WARN, { title = "Harpoon" })
     end, { desc = "Unmark current file from Harpoon" })
+
+    -- Keymap to clear all harpoon files
+    vim.keymap.set("n", "<leader>mp", function()
+      local harpoon = require("harpoon")
+      local list = harpoon:list()
+      list:clear()
+      vim.notify("Cleared all Harpoon marks", vim.log.levels.INFO, { title = "Harpoon" })
+    end, { desc = "Clear all Harpoon marks" })
   end,
 } 

@@ -7,6 +7,81 @@ vim.o.termguicolors = true -- Better color support in terminal
 vim.o.splitright = true -- Open vertical splits to the right
 vim.o.splitbelow = true -- Open horizontal splits below
 
+-- Enable word wrap
+vim.wo.wrap = true
+vim.wo.linebreak = true -- Wrap at word boundaries
+vim.wo.breakindent = true -- Preserve indentation in wrapped lines
+
+-- Macro recording notifications
+vim.api.nvim_create_autocmd("RecordingEnter", {
+  callback = function()
+    vim.notify("Macro recording started", vim.log.levels.INFO, {
+      title = "Macro",
+      timeout = 2000,
+      highlight = "MacroStart",
+    })
+    -- Print to command line for debugging
+    vim.cmd("echo 'Recording macro...'")
+  end,
+})
+
+vim.api.nvim_create_autocmd("RecordingLeave", {
+  callback = function()
+    vim.notify("Macro recording stopped", vim.log.levels.INFO, {
+      title = "Macro",
+      timeout = 2000,
+      highlight = "MacroStop",
+    })
+    -- Print to command line for debugging
+    vim.cmd("echo 'Macro recording stopped'")
+  end,
+})
+
+-- Add highlight groups for macro notifications
+vim.api.nvim_set_hl(0, "MacroStart", { fg = "#00ff00", bold = true })
+vim.api.nvim_set_hl(0, "MacroStop", { fg = "#ff0000", bold = true })
+vim.api.nvim_set_hl(0, "MacroReplay", { fg = "#00ffff", bold = true })
+vim.api.nvim_set_hl(0, "MacroClear", { fg = "#ff00ff", bold = true })
+
+-- Function to show macro replay notification
+local function show_macro_replay(count)
+  local message = count > 1 and 
+    string.format("Replaying macro %d times", count) or 
+    "Replaying macro"
+  vim.notify(message, vim.log.levels.INFO, {
+    title = "Macro",
+    timeout = 2000,
+    highlight = "MacroReplay",
+  })
+end
+
+-- Function to clear all macros
+local function clear_all_macros()
+  -- Clear all registers from a to z
+  for i = 97, 122 do  -- ASCII values for 'a' to 'z'
+    vim.fn.setreg(string.char(i), '')
+  end
+  -- Clear all registers from 0 to 9
+  for i = 48, 57 do  -- ASCII values for '0' to '9'
+    vim.fn.setreg(string.char(i), '')
+  end
+  vim.notify("All macros cleared", vim.log.levels.INFO, {
+    title = "Macro",
+    timeout = 2000,
+    highlight = "MacroClear",
+  })
+end
+
+-- Create keymaps for macro replay with notifications
+vim.keymap.set("n", "@", function()
+  local count = vim.v.count1
+  show_macro_replay(count)
+  return "@"
+end, { expr = true })
+
+-- Add keybinding to clear all macros
+vim.keymap.set("n", "<leader>mc", clear_all_macros, { desc = "Clear all macros" })
+
 local opts = { noremap = true, silent = true }
 
 -- Mappings for starting selection with Shift+Arrow keys

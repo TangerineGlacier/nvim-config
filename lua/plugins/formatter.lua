@@ -5,16 +5,7 @@ return {
         require("formatter").setup({
           logging = false,  -- Enable to debug formatting issues
           filetype = {
-            python = {
-              -- Format Python files with Black
-              function()
-                return {
-                  exe = "black",         -- Ensure Black is installed: pip install black
-                  args = {"--quiet", "-"},-- Use '-' to read from stdin
-                  stdin = true,
-                }
-              end,
-            },
+
             json = {
               -- Format JSON files with Prettier
               function()
@@ -60,6 +51,9 @@ return {
   
         -- Key Mapping: Bind Option+Shift+F (represented as <A-F>) to format the current file
         vim.keymap.set("n", "<A-F>", ":Format<CR>", { noremap = true, silent = true })
+
+        -- Ignore "no formatter" message
+        vim.g.formatter_quiet = 1
       end,
     },
   }
