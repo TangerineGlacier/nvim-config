@@ -467,7 +467,15 @@ require('lazy').setup({
   -- Git related plugins
   'tpope/vim-fugitive',
   'lewis6991/gitsigns.nvim',
-
+  {
+    "baliestri/aura-theme",
+    lazy = false,
+    priority = 1000,
+    config = function(plugin)
+      vim.opt.rtp:append(plugin.dir .. "/packages/neovim")
+      vim.cmd([[colorscheme aura-dark]])
+    end
+  },
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -482,6 +490,25 @@ require('lazy').setup({
   --   config = true
   -- },
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+
+  -- Transparency
+  {
+    'xiyaowong/transparent.nvim',
+    lazy = false,
+    config = function()
+      require('transparent').setup({
+        groups = { -- table: default groups
+          'Normal', 'NormalNC', 'Comment', 'Constant', 'Special', 'Identifier',
+          'Statement', 'PreProc', 'Type', 'Underlined', 'Todo', 'String', 'Function',
+          'Conditional', 'Repeat', 'Operator', 'Structure', 'LineNr', 'NonText',
+          'SignColumn', 'CursorLine', 'CursorLineNr', 'StatusLine', 'StatusLineNC',
+          'EndOfBuffer',
+        },
+        extra_groups = {}, -- table: additional groups that should be cleared
+        exclude_groups = {}, -- table: groups you don't want to clear
+      })
+    end,
+  },
 
   -- Fuzzy Finder (files, lsp, etc)
   { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },

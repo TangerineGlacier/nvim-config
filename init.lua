@@ -1,3 +1,4 @@
+-- vim.o.laststatus = 3
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 -- Use the system clipboard for all yank, delete, change, and put operations
@@ -14,27 +15,27 @@ vim.wo.breakindent = true -- Preserve indentation in wrapped lines
 
 -- Macro recording notifications
 vim.api.nvim_create_autocmd("RecordingEnter", {
-  callback = function()
-    vim.notify("Macro recording started", vim.log.levels.INFO, {
-      title = "Macro",
-      timeout = 2000,
-      highlight = "MacroStart",
-    })
-    -- Print to command line for debugging
-    vim.cmd("echo 'Recording macro...'")
-  end,
+	callback = function()
+		vim.notify("Macro recording started", vim.log.levels.INFO, {
+			title = "Macro",
+			timeout = 2000,
+			highlight = "MacroStart",
+		})
+		-- Print to command line for debugging
+		vim.cmd("echo 'Recording macro...'")
+	end,
 })
 
 vim.api.nvim_create_autocmd("RecordingLeave", {
-  callback = function()
-    vim.notify("Macro recording stopped", vim.log.levels.INFO, {
-      title = "Macro",
-      timeout = 2000,
-      highlight = "MacroStop",
-    })
-    -- Print to command line for debugging
-    vim.cmd("echo 'Macro recording stopped'")
-  end,
+	callback = function()
+		vim.notify("Macro recording stopped", vim.log.levels.INFO, {
+			title = "Macro",
+			timeout = 2000,
+			highlight = "MacroStop",
+		})
+		-- Print to command line for debugging
+		vim.cmd("echo 'Macro recording stopped'")
+	end,
 })
 
 -- Add highlight groups for macro notifications
@@ -45,38 +46,36 @@ vim.api.nvim_set_hl(0, "MacroClear", { fg = "#ff00ff", bold = true })
 
 -- Function to show macro replay notification
 local function show_macro_replay(count)
-  local message = count > 1 and 
-    string.format("Replaying macro %d times", count) or 
-    "Replaying macro"
-  vim.notify(message, vim.log.levels.INFO, {
-    title = "Macro",
-    timeout = 2000,
-    highlight = "MacroReplay",
-  })
+	local message = count > 1 and string.format("Replaying macro %d times", count) or "Replaying macro"
+	vim.notify(message, vim.log.levels.INFO, {
+		title = "Macro",
+		timeout = 2000,
+		highlight = "MacroReplay",
+	})
 end
 
 -- Function to clear all macros
 local function clear_all_macros()
-  -- Clear all registers from a to z
-  for i = 97, 122 do  -- ASCII values for 'a' to 'z'
-    vim.fn.setreg(string.char(i), '')
-  end
-  -- Clear all registers from 0 to 9
-  for i = 48, 57 do  -- ASCII values for '0' to '9'
-    vim.fn.setreg(string.char(i), '')
-  end
-  vim.notify("All macros cleared", vim.log.levels.INFO, {
-    title = "Macro",
-    timeout = 2000,
-    highlight = "MacroClear",
-  })
+	-- Clear all registers from a to z
+	for i = 97, 122 do -- ASCII values for 'a' to 'z'
+		vim.fn.setreg(string.char(i), "")
+	end
+	-- Clear all registers from 0 to 9
+	for i = 48, 57 do -- ASCII values for '0' to '9'
+		vim.fn.setreg(string.char(i), "")
+	end
+	vim.notify("All macros cleared", vim.log.levels.INFO, {
+		title = "Macro",
+		timeout = 2000,
+		highlight = "MacroClear",
+	})
 end
 
 -- Create keymaps for macro replay with notifications
 vim.keymap.set("n", "@", function()
-  local count = vim.v.count1
-  show_macro_replay(count)
-  return "@"
+	local count = vim.v.count1
+	show_macro_replay(count)
+	return "@"
 end, { expr = true })
 
 -- Add keybinding to clear all macros
@@ -127,35 +126,36 @@ vim.keymap.set("n", "<A-S-Right>", "v<w", opts)
 vim.keymap.set("v", "<A-S-Left>", "b", opts)
 vim.keymap.set("v", "<A-S-Right>", "w", opts)
 
-
-require('keymaps')
-require('plugins.lazy')
-require('plugins.misc')
-require('plugins.lualine')
-require('plugins.formatter')
-require('options')
-require('misc')
-require('plugins.dap')
-require('plugins.gitsigns')
-require('plugins.tele')
-require('plugins.treesitter')
-require('plugins.lsp')
-require('plugins.trouble')
-require('plugins.nvim-tangerine').setup()
-require('plugins.zenmode')
-require('plugins.neogit')
-require('plugins.codesnap')
-require('plugins.mini')
+require("keymaps")
+require("plugins.lazy")
+require("plugins.misc")
+require("plugins.lualine")
+require("plugins.formatter")
+require("options")
+require("misc")
+require("plugins.dap")
+require("plugins.gitsigns")
+require("plugins.tele")
+require("plugins.treesitter")
+require("plugins.lsp")
+require("plugins.trouble")
+require("plugins.nvim-tangerine").setup()
+require("plugins.zenmode")
+require("plugins.neogit")
+require("plugins.codesnap")
+require("plugins.mini")
 require("snippets.react")
-require('plugins.obsidian')
-require('plugins.prettier')
+require("plugins.obsidian")
+require("plugins.prettier")
 
-require('plugins.highlights')
-require('plugins.harpoon')
+require("plugins.highlights")
+require("plugins.harpoon")
+vim.keymap.set("n", "<Esc>p", "<cmd>Telescope find_files<cr>", { noremap = true, silent = true })
 
 -- Auto-save when leaving insert mode
 vim.api.nvim_create_autocmd("InsertLeave", {
-    pattern = "*",
-    command = "silent! write",
-    group = vim.api.nvim_create_augroup("AutoSave", { clear = true })
+	pattern = "*",
+	command = "silent! write",
+	group = vim.api.nvim_create_augroup("AutoSave", { clear = true }),
 })
+
