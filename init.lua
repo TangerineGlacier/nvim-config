@@ -135,7 +135,7 @@ require("options")
 require("misc")
 require("plugins.dap")
 require("plugins.gitsigns")
-require("plugins.tele")
+require("plugins.telescope")
 require("plugins.treesitter")
 require("plugins.lsp")
 require("plugins.trouble")
@@ -145,7 +145,7 @@ require("plugins.neogit")
 require("plugins.codesnap")
 require("plugins.mini")
 require("snippets.react")
-require("plugins.obsidian")
+
 require("plugins.prettier")
 
 require("plugins.highlights")
@@ -159,3 +159,4 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 	group = vim.api.nvim_create_augroup("AutoSave", { clear = true }),
 })
 
+vim.keymap.set('n', '<leader>r', ':set relativenumber!<CR>')
