@@ -63,6 +63,23 @@ end
 -- Setup mason so it can manage external tooling
 require('mason').setup()
 
+-- Setup mason-lspconfig to auto-install LSP servers
+require('mason-lspconfig').setup({
+  ensure_installed = {
+    'clangd', 
+    'rust_analyzer', 
+    'pyright', 
+    'jsonls',
+    'golangci_lint_ls',
+    'html',      -- HTML
+    'gopls',
+    'tailwindcss', -- Tailwind CSS
+    'eslint',     -- ESLint
+    'bashls'      -- Bash Language Server
+  },
+  automatic_installation = true,
+})
+
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
 local servers = { 
@@ -75,7 +92,8 @@ local servers = {
   'html',      -- HTML
   'gopls',
   'tailwindcss', -- Tailwind CSS
-  'eslint'     -- ESLint
+  'eslint',     -- ESLint
+  'bashls'      -- Bash Language Server
 }
 
 -- nvim-cmp supports additional completion capabilities
@@ -92,7 +110,6 @@ for _, lsp in ipairs(servers) do
   -- Add specific configurations for certain servers
   if lsp == 'ts_ls' then
     config.filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' }
-    config.cmd = { 'typescript-language-server', '--stdio' }
   elseif lsp == 'html' then
     config.filetypes = { 'html', 'javascriptreact', 'typescriptreact' }
   elseif lsp == 'tailwindcss' then

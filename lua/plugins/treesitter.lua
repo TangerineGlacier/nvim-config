@@ -8,9 +8,12 @@ require("nvim-treesitter.configs").setup({
 		"python",
 		"rust",
 		"typescript",
+
 		"regex",
 		"bash",
 		"markdown",
+		"tsx",
+
 		"markdown_inline",
 		"kdl",
 		"sql",
@@ -18,6 +21,7 @@ require("nvim-treesitter.configs").setup({
 		"html",
 		"css",
 		"javascript",
+
 		"yaml",
 		"json",
 		"toml",

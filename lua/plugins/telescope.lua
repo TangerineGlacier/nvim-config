@@ -30,41 +30,54 @@ return {
             '--hidden',
             '--glob=!.git/',
             '--glob=!node_modules/',
+            '--glob=!**/node_modules/',
+            '--glob=!**/node_modules/**/*',
             '--glob=!__pycache__/',
             '--glob=!.pytest_cache/',
             '--glob=!.venv/',
             '--glob=!venv/',
             '--glob=!env/',
             '--glob=!ENV/',
-            '--glob=!.env/',
             '--glob=!dist/',
             '--glob=!build/',
             '--glob=!.DS_Store',
+            '--glob=.env*',
           },
         },
         pickers = {
           find_files = {
-            hidden = false,
-            no_ignore = false,
+            hidden = true,
+            grep_string = {
+              additional_args = {"--hidden"}
+            },
+            live_grep = {
+              additional_args = {"--hidden"}
+            },
+            no_ignore = true,
+            follow = true,
+            respect_gitignore = false,
+            file_ignore_patterns = {
+              "node_modules",
+              "gitignore",
+            },
             find_command = {
               'rg',
               '--files',
               '--hidden',
               '--glob=!.git/',
               '--glob=!node_modules/',
+              '--glob=!gitignore/',
               '--glob=!__pycache__/',
               '--glob=!.pytest_cache/',
               '--glob=!.venv/',
               '--glob=!venv/',
               '--glob=!env/',
               '--glob=!ENV/',
-              '--glob=!.env/',
               '--glob=!dist/',
               '--glob=!build/',
               '--glob=!.DS_Store',
+              '--glob=.env*',
             },
-            follow = true,
-            respect_gitignore = true,
           },
           live_grep = {
             additional_args = function()
@@ -72,18 +85,23 @@ return {
                 "--hidden",
                 "--glob=!.git/",
                 "--glob=!node_modules/",
+                "--glob=!gitignore/",
                 "--glob=!__pycache__/",
                 "--glob=!.pytest_cache/",
                 "--glob=!.venv/",
                 "--glob=!venv/",
                 "--glob=!env/",
                 "--glob=!ENV/",
-                "--glob=!.env/",
                 "--glob=!dist/",
                 "--glob=!build/",
                 "--glob=!.DS_Store",
+                "--glob=.env*",
               }
             end,
+            file_ignore_patterns = {
+              "node_modules",
+              "gitignore",
+            },
           },
         },
       })
@@ -92,11 +110,43 @@ return {
       pcall(telescope.load_extension, 'fzf')
       pcall(telescope.load_extension, 'git_worktree')
 
+      -- Custom finder function to exclude node_modules
+      local function find_files_no_node_modules()
+        require('telescope.builtin').find_files({
+          hidden = false,
+          no_ignore = true,
+          follow = true,
+          respect_gitignore = false,
+          file_ignore_patterns = {
+            "node_modules",
+            "gitignore",
+          },
+          find_command = {
+            'rg',
+            '--files',
+            '--hidden',
+            '--glob=!.git/',
+            '--glob=!node_modules/',
+            '--glob=!gitignore/',
+            '--glob=!__pycache__/',
+            '--glob=!.pytest_cache/',
+            '--glob=!.venv/',
+            '--glob=!venv/',
+            '--glob=!env/',
+            '--glob=!ENV/',
+            '--glob=!dist/',
+            '--glob=!build/',
+            '--glob=!.DS_Store',
+            '--glob=.env*',
+          },
+        })
+      end
+
       -- Keybindings
-      vim.keymap.set('n', '<D-S-P>', builtin.find_files, { desc = 'Find files' })
+      vim.keymap.set('n', '<D-S-P>', find_files_no_node_modules, { desc = 'Find files (no node_modules)' })
       vim.keymap.set('n', '<D-F>', builtin.live_grep, { desc = 'Live grep' })
       vim.keymap.set('n', '<D-S-F>', builtin.live_grep, { desc = 'Universal search (live grep)' })
-      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find files' })
+      vim.keymap.set('n', '<leader>ff', find_files_no_node_modules, { desc = 'Find files (no node_modules)' })
       vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live grep' })
       vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Find buffers' })
       vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Help tags' })

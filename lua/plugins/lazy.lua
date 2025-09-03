@@ -34,6 +34,37 @@ require("lazy").setup({
 						["<space>e"] = "close_window",
 					},
 				},
+				filesystem = {
+					filtered_items = {
+						visible = false,
+						hide_dotfiles = false,
+						hide_gitignored = false,
+						hide_by_name = {
+							"node_modules",
+							".DS_Store",
+							"__pycache__",
+							".pytest_cache",
+							".venv",
+							"venv",
+							"env",
+							"ENV",
+							"dist",
+							"build",
+						},
+						hide_by_pattern = {
+							"**/node_modules/**",
+							"**/.git/**",
+							"**/__pycache__/**",
+							"**/.pytest_cache/**",
+							"**/.venv/**",
+							"**/venv/**",
+							"**/env/**",
+							"**/ENV/**",
+							"**/dist/**",
+							"**/build/**",
+						},
+					},
+				},
 			})
 			vim.keymap.set("n", "<space>e", function()
 				require("neo-tree.command").execute({ toggle = true })
@@ -630,25 +661,25 @@ require("lazy").setup({
 			require("nvim-ts-autotag").setup()
 		end,
 	},
-	{
-		"alvan/vim-closetag",
-		config = function()
-			-- Configure plugin options here
-			vim.g.closetag_filenames = '*.html,*.jsx,*.xhtml,*.phtml'
-			vim.g.closetag_xhtml_filenames = '*.xhtml,*.jsx'
-			vim.g.closetag_filetypes = 'html,javascriptreact,js,xhtml,phtml'
-			vim.g.closetag_xhtml_filetypes = 'xhtml,jsx'
-			vim.g.closetag_emptyTags_caseSensitive = 1
-			vim.g.closetag_regions = {
-				['typescript.tsx'] = 'jsxRegion,tsxRegion',
-				['javascript.jsx'] = 'jsxRegion',
-				['typescriptreact'] = 'jsxRegion,tsxRegion',
-				['javascriptreact'] = 'jsxRegion',
-			}
-			vim.g.closetag_shortcut = '>'              -- shortcut for closing tag
-			vim.g.closetag_close_shortcut = '<leader>>' -- shortcut to add > without closing tag
-		end,
-	},
+	-- {
+	-- 	"alvan/vim-closetag",
+	-- 	config = function()
+	-- 		-- Configure plugin options here
+	-- 		vim.g.closetag_filenames = '*.html,*.jsx,*.xhtml,*.phtml, *.ts, *.js, *.jsx, *.tsx'
+	-- 		vim.g.closetag_xhtml_filenames = '*.xhtml,*.jsx, *.ts, *.js, *.jsx, *.tsx'
+	-- 		vim.g.closetag_filetypes = 'html,javascriptreact,js,xhtml,phtml,typescriptreact,typescript'
+	-- 		vim.g.closetag_xhtml_filetypes = 'xhtml,jsx,typescriptreact,typescript'
+	-- 		vim.g.closetag_emptyTags_caseSensitive = 1
+	-- 		vim.g.closetag_regions = {
+	-- 			['typescript.tsx'] = 'jsxRegion,tsxRegion',
+	-- 			['javascript.jsx'] = 'jsxRegion',
+	-- 			['typescriptreact'] = 'jsxRegion,tsxRegion',
+	-- 			['javascriptreact'] = 'jsxRegion',
+	-- 		}
+	-- 		vim.g.closetag_shortcut = '>'              -- shortcut for closing tag
+	-- 		vim.g.closetag_close_shortcut = '<leader>>' -- shortcut to add > without closing tag
+	-- 	end,
+	-- },
 	{
 		"folke/zen-mode.nvim",
 		opts = {
@@ -692,6 +723,20 @@ require("lazy").setup({
 					font = "+4", -- font size increment
 				},
 			},
+		},
+	},
+	{
+		"mistweaverco/kulala.nvim",
+		keys = {
+			{ "<leader>zs", desc = "Send request" },
+			{ "<leader>za", desc = "Send all requests" },
+			{ "<leader>zb", desc = "Open scratchpad" },
+		},
+		ft = {"http", "rest"},
+		opts = {
+			global_keymaps = false,
+			global_keymaps_prefix = "<leader>z",
+			kulala_keymaps_prefix = "",
 		},
 	},
 	require("plugins.harpoon"),
