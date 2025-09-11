@@ -141,14 +141,14 @@ require("lazy").setup({
 				enabled = true,
 				sections = {
 					{ section = "header" },
-					{ section = "keys", gap = 1, padding = 3 },
+					{ section = "keys", gap = 1, padding = 6 },
 					{ section = "startup" },
 					{
 						section = "terminal",
-						cmd = "pokemon-colorscripts -n charizard  --no-title; sleep .1",
+						cmd = "pokemon-colorscripts -n arbok --no-title; sleep .1",
 						random = 10,
 						pane = 2,
-						indent = 4,
+						indent = 8,
 						height = 30,
 					},
 				},
@@ -421,13 +421,14 @@ require("lazy").setup({
 			"rcarriga/nvim-notify",
 		},
 	},
+	
 
 	"ray-x/go.nvim",
 	"ray-x/guihua.lua",
 	{
 		"tiagovla/tokyodark.nvim",
 		opts = {
-			transparent_background = true,
+			-- transparent_background = true,
 		},
 		config = function(_, opts)
 			require("tokyodark").setup(opts)
@@ -556,10 +557,17 @@ require("lazy").setup({
 			},
 			formatters = {
 				prettier = {
-					prepend_args = { "--single-quote", "--jsx-single-quote" },
+					prepend_args = { "--double-quote", "--jsx-double-quote" },
 				},
 			},
 		},
+	},
+	{
+		"jose-elias-alvarez/nvim-lsp-ts-utils",
+		dependencies = { "nvim-lspconfig" },
+		config = function()
+			-- Configuration is handled in lsp.lua
+		end,
 	},
 	{
 		"rcarriga/nvim-dap-ui",
@@ -592,43 +600,43 @@ require("lazy").setup({
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 
 	-- Transparency
-	{
-		"xiyaowong/transparent.nvim",
-		lazy = false,
-		config = function()
-			require("transparent").setup({
-				groups = { -- table: default groups
-					"Normal",
-					"NormalNC",
-					"Comment",
-					"Constant",
-					"Special",
-					"Identifier",
-					"Statement",
-					"PreProc",
-					"Type",
-					"Underlined",
-					"Todo",
-					"String",
-					"Function",
-					"Conditional",
-					"Repeat",
-					"Operator",
-					"Structure",
-					"LineNr",
-					"NonText",
-					"SignColumn",
-					"CursorLine",
-					"CursorLineNr",
-					"StatusLine",
-					"StatusLineNC",
-					"EndOfBuffer",
-				},
-				extra_groups = {}, -- table: additional groups that should be cleared
-				exclude_groups = {}, -- table: groups you don't want to clear
-			})
-		end,
-	},
+	-- {
+	-- 	"xiyaowong/transparent.nvim",
+	-- 	lazy = false,
+	-- 	config = function()
+	-- 		require("transparent").setup({
+	-- 			groups = { -- table: default groups
+	-- 				"Normal",
+	-- 				"NormalNC",
+	-- 				"Comment",
+	-- 				"Constant",
+	-- 				"Special",
+	-- 				"Identifier",
+	-- 				"Statement",
+	-- 				"PreProc",
+	-- 				"Type",
+	-- 				"Underlined",
+	-- 				"Todo",
+	-- 				"String",
+	-- 				"Function",
+	-- 				"Conditional",
+	-- 				"Repeat",
+	-- 				"Operator",
+	-- 				"Structure",
+	-- 				"LineNr",
+	-- 				"NonText",
+	-- 				"SignColumn",
+	-- 				"CursorLine",
+	-- 				"CursorLineNr",
+	-- 				"StatusLine",
+	-- 				"StatusLineNC",
+	-- 				"EndOfBuffer",
+	-- 			},
+	-- 			extra_groups = {}, -- table: additional groups that should be cleared
+	-- 			exclude_groups = {}, -- table: groups you don't want to clear
+	-- 		})
+	-- 	end,
+	-- },
 
 	{
 		"folke/twilight.nvim",
@@ -654,6 +662,7 @@ require("lazy").setup({
 			})
 		end,
 	},
+	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 	{
 		"windwp/nvim-ts-autotag",
 		ft = { "html", "javascript", "javascriptreact", "typescript", "typescriptreact" },

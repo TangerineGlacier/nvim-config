@@ -1,22 +1,30 @@
 return {
-    {
-      "MunifTanjim/prettier.nvim",
-      bin = "prettierd",
-      filetypes = {
-        "css",
-        "html",
-        "javascript",
-        "javascriptreact",
-        "typescript",
-        "typescriptreact",
-        "json",
-        "scss",
-        "yaml",
-        "lua",
-        "analog",
-        "ag",
-      },
-    },
+    -- Disabled to prevent conflicts with conform.nvim
+    -- {
+    --   "MunifTanjim/prettier.nvim",
+    --   bin = "prettierd",
+    --   filetypes = {
+    --     "css",
+    --     "html",
+    --     "javascript",
+    --     "javascriptreact",
+    --     "typescript",
+    --     "typescriptreact",
+    --     "json",
+    --     "scss",
+    --     "yaml",
+    --     "lua",
+    --     "analog",
+    --     "ag",
+    --   },
+    --   cli_args = {
+    --     "--single-quote",
+    --     "--trailing-comma=es5",
+    --     "--tab-width=2",
+    --     "--semi=true",
+    --     "--print-width=80"
+    --   },
+    -- },
     {
       "williamboman/mason.nvim",
       opts = function(_, opts)

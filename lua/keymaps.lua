@@ -96,7 +96,7 @@ vim.keymap.set("n", "<D-p>", "<cmd>lua require('telescope.builtin').find_files({
 
 vim.keymap.set(
 	"n",
-	"<leader>i",
+	"<leader>s",
 	"<cmd>Telescope live_grep<CR>",
 	{ noremap = true, silent = true, desc = "Universal search" }
 )

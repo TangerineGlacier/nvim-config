@@ -27,7 +27,13 @@ local on_attach = function(_, bufnr)
   -- Mouse mappings
   vim.keymap.set('n', '<LeftMouse>', '<LeftMouse>', { buffer = bufnr })
   vim.keymap.set('n', '<C-LeftMouse>', '<LeftMouse><Cmd>lua vim.lsp.buf.definition()<CR>', { buffer = bufnr })
+  vim.keymap.set('i', '<C-LeftMouse>', '<LeftMouse><Cmd>lua vim.lsp.buf.definition()<CR>', { buffer = bufnr })
   vim.keymap.set('n', '<S-LeftMouse>', '<LeftMouse><Cmd>lua vim.lsp.buf.references()<CR>', { buffer = bufnr })
+  vim.keymap.set('i', '<S-LeftMouse>', '<LeftMouse><Cmd>lua vim.lsp.buf.references()<CR>', { buffer = bufnr })
+
+  -- Ctrl+Enter for go to definition
+  vim.keymap.set('n', '<C-CR>', '<Cmd>lua vim.lsp.buf.definition()<CR>', { buffer = bufnr, desc = 'Go to Definition' })
+  vim.keymap.set('i', '<C-CR>', '<Cmd>lua vim.lsp.buf.definition()<CR>', { buffer = bufnr, desc = 'Go to Definition' })
 
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
@@ -86,7 +92,7 @@ local servers = {
   'clangd', 
   'rust_analyzer', 
   'pyright', 
-  'ts_ls',
+  -- 'ts_ls', -- Configured separately below
   'jsonls',
   'golangci_lint_ls',
   'html',      -- HTML
@@ -100,6 +106,16 @@ local servers = {
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
+-- Enable additional capabilities for better auto-imports
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities.textDocument.completion.completionItem.resolveSupport = {
+  properties = {
+    'documentation',
+    'detail',
+    'additionalTextEdits',
+  }
+}
+
 -- Setup LSP configurations
 for _, lsp in ipairs(servers) do
   local config = {
@@ -108,9 +124,7 @@ for _, lsp in ipairs(servers) do
   }
 
   -- Add specific configurations for certain servers
-  if lsp == 'ts_ls' then
-    config.filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' }
-  elseif lsp == 'html' then
+  if lsp == 'html' then
     config.filetypes = { 'html', 'javascriptreact', 'typescriptreact' }
   elseif lsp == 'tailwindcss' then
     config.filetypes = { 'html', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'css' }
@@ -130,7 +144,7 @@ for _, lsp in ipairs(servers) do
         enable = true,
         mode = "all"
       },
-      format = true,
+      format = false,
       nodePath = "",
       onIgnoredFiles = "off",
       packageManager = "npm",
@@ -147,6 +161,75 @@ for _, lsp in ipairs(servers) do
 
   require('lspconfig')[lsp].setup(config)
 end
+
+-- Configure TypeScript server with nvim-lsp-ts-utils for better auto-imports
+require('lspconfig').ts_ls.setup({
+  on_attach = function(client, bufnr)
+    -- Setup nvim-lsp-ts-utils for enhanced TypeScript functionality
+    local ts_utils = require('nvim-lsp-ts-utils')
+    ts_utils.setup({
+      enable_import_on_completion = true,
+      import_all_timeout = 5000,
+      import_all_priorities = {
+        same_file = 1,
+        local_files = 2,
+        buffer_content = 3,
+        buffers = 4,
+      },
+      import_all_scan_buffers = 100,
+      import_all_select_source = false,
+      auto_organize_imports = true,
+      update_imports_on_move = true,
+      require_confirmation_on_move = false,
+      watch_dir = nil,
+    })
+    ts_utils.setup_client(client)
+    
+    on_attach(client, bufnr)
+  end,
+  capabilities = capabilities,
+  settings = {
+    typescript = {
+      suggest = {
+        autoImports = true,
+        includeCompletionsForModuleExports = true,
+      },
+      inlayHints = {
+        enabled = true,
+      },
+      preferences = {
+        includePackageJsonAutoImports = "auto",
+        includeCompletionsForImportStatements = true,
+        includeCompletionsWithSnippetText = true,
+        includeCompletionsWithInsertText = true,
+        allowIncompleteCompletions = true,
+      },
+    },
+    javascript = {
+      suggest = {
+        autoImports = true,
+        includeCompletionsForModuleExports = true,
+      },
+      inlayHints = {
+        enabled = true,
+      },
+      preferences = {
+        includePackageJsonAutoImports = "auto",
+        includeCompletionsForImportStatements = true,
+        includeCompletionsWithSnippetText = true,
+        includeCompletionsWithInsertText = true,
+        allowIncompleteCompletions = true,
+      },
+    },
+  },
+  init_options = {
+    preferences = {
+      includePackageJsonAutoImports = "auto",
+      includeCompletionsForImportStatements = true,
+    },
+    hostInfo = "neovim",
+  },
+})
 
 -- Turn on lsp status information
 require('fidget').setup()
