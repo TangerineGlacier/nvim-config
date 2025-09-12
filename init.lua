@@ -19,7 +19,6 @@ vim.api.nvim_create_autocmd("RecordingEnter", {
 		vim.notify("Macro recording started", vim.log.levels.INFO, {
 			title = "Macro",
 			timeout = 2000,
-			highlight = "MacroStart",
 		})
 		-- Print to command line for debugging
 		vim.cmd("echo 'Recording macro...'")
@@ -31,18 +30,13 @@ vim.api.nvim_create_autocmd("RecordingLeave", {
 		vim.notify("Macro recording stopped", vim.log.levels.INFO, {
 			title = "Macro",
 			timeout = 2000,
-			highlight = "MacroStop",
 		})
 		-- Print to command line for debugging
 		vim.cmd("echo 'Macro recording stopped'")
 	end,
 })
 
--- Add highlight groups for macro notifications
-vim.api.nvim_set_hl(0, "MacroStart", { fg = "#00ff00", bold = true })
-vim.api.nvim_set_hl(0, "MacroStop", { fg = "#ff0000", bold = true })
-vim.api.nvim_set_hl(0, "MacroReplay", { fg = "#00ffff", bold = true })
-vim.api.nvim_set_hl(0, "MacroClear", { fg = "#ff00ff", bold = true })
+-- Macro highlighting disabled - no custom colors for macro notifications
 
 -- Function to show macro replay notification
 local function show_macro_replay(count)
@@ -50,7 +44,6 @@ local function show_macro_replay(count)
 	vim.notify(message, vim.log.levels.INFO, {
 		title = "Macro",
 		timeout = 2000,
-		highlight = "MacroReplay",
 	})
 end
 
@@ -67,7 +60,6 @@ local function clear_all_macros()
 	vim.notify("All macros cleared", vim.log.levels.INFO, {
 		title = "Macro",
 		timeout = 2000,
-		highlight = "MacroClear",
 	})
 end
 
@@ -148,7 +140,7 @@ require("snippets.react")
 
 require("plugins.prettier")
 
-require("plugins.highlights")
+require("plugins.highlights") -- Enable to remove highlighting effects while keeping colors
 require("plugins.harpoon")
 vim.keymap.set("n", "<Esc>p", "<cmd>Telescope find_files<cr>", { noremap = true, silent = true })
 

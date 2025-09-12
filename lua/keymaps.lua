@@ -103,6 +103,10 @@ vim.keymap.set(
 
 vim.keymap.set("n", "<leader>l", ":Lazy<CR>", { noremap = true, silent = true })
 
+-- Theme changer
+vim.keymap.set("n", "<leader>t", ":Themery<CR>", { noremap = true, silent = true, desc = "Change theme" })
+vim.api.nvim_create_user_command("ChangeTheme", ":Themery<CR>", { desc = "Open theme picker" })
+
 -- Comment mappings
 vim.keymap.set("v", "<leader>/", "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", { noremap = true, silent = true, desc = "Toggle comment" })
 vim.keymap.set("n", "<leader>/", "<CMD>lua require('Comment.api').toggle.linewise()<CR>", { noremap = true, silent = true, desc = "Toggle comment" })

@@ -425,6 +425,71 @@ require("lazy").setup({
 
 	"ray-x/go.nvim",
 	"ray-x/guihua.lua",
+	-- ========================================
+	-- COLORSCHEMES - Choose one by uncommenting
+	-- ========================================
+	
+	-- Vague Theme (Modern, low contrast)
+	{
+		"vague2k/vague.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("vague").setup({
+				transparent = false, -- don't set background
+				bold = true,
+				italic = true,
+				style = {
+					boolean = "bold",
+					number = "none",
+					float = "none",
+					error = "bold",
+					comments = "italic",
+					conditionals = "none",
+					functions = "none",
+					headings = "bold",
+					operators = "none",
+					strings = "italic",
+					variables = "none",
+					keywords = "none",
+					keyword_return = "italic",
+					keywords_loop = "none",
+					keywords_label = "none",
+					keywords_exception = "none",
+					builtin_constants = "bold",
+					builtin_functions = "none",
+					builtin_types = "bold",
+					builtin_variables = "none",
+				},
+				plugins = {
+					cmp = {
+						match = "bold",
+						match_fuzzy = "bold",
+					},
+					dashboard = {
+						footer = "italic",
+					},
+					lsp = {
+						diagnostic_error = "bold",
+						diagnostic_hint = "none",
+						diagnostic_info = "italic",
+						diagnostic_ok = "none",
+						diagnostic_warn = "bold",
+					},
+					neotest = {
+						focused = "bold",
+						adapter_name = "bold",
+					},
+					telescope = {
+						match = "bold",
+					},
+				},
+			})
+			-- vim.cmd("colorscheme vague") -- Uncomment to use Vague
+		end,
+	},
+
+	-- Tokyo Dark Theme (Classic dark theme)
 	{
 		"tiagovla/tokyodark.nvim",
 		opts = {
@@ -432,9 +497,136 @@ require("lazy").setup({
 		},
 		config = function(_, opts)
 			require("tokyodark").setup(opts)
-			vim.cmd("colorscheme tokyodark")
+			-- vim.cmd("colorscheme tokyodark") -- Uncomment to use Tokyo Dark
 		end,
 	},
+
+	-- Catppuccin Theme (Popular, multiple variants)
+	{
+		"catppuccin/nvim",
+		name = "catppuccin",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("catppuccin").setup({
+				flavour = "mocha", -- latte, frappe, macchiato, mocha
+				background = { -- :h background
+					light = "latte",
+					dark = "mocha",
+				},
+				transparent_background = false, -- disables setting the background color.
+				show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
+				term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
+				dim_inactive = {
+					enabled = false, -- dims the background color of inactive window
+					shade = "dark",
+					percentage = 0.15, -- percentage of the shade to apply to the inactive window
+				},
+				no_italic = false, -- Force no italic
+				no_bold = false, -- Force no bold
+				no_underline = false, -- Force no underline
+				styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
+					comments = { "italic" }, -- Change the style of comments
+					conditionals = { "italic" },
+					loops = {},
+					functions = {},
+					keywords = {},
+					strings = {},
+					variables = {},
+					numbers = {},
+					booleans = {},
+					properties = {},
+					types = {},
+					operators = {},
+				},
+				color_overrides = {},
+				custom_highlights = {},
+				integrations = {
+					cmp = true,
+					gitsigns = true,
+					nvimtree = true,
+					telescope = true,
+					notify = false,
+					mini = false,
+					-- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+				},
+			})
+			-- vim.cmd("colorscheme catppuccin") -- Uncomment to use Catppuccin
+		end,
+	},
+
+	-- OldWorld Theme (Relaxing, non-saturated colors)
+	{
+		"dgox16/oldworld.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("oldworld").setup({
+				terminal_colors = true, -- enable terminal colors
+				variant = "default", -- default, oled, cooler
+				styles = { -- You can pass the style using the format: style = true
+					comments = {}, -- style for comments
+					keywords = {}, -- style for keywords
+					identifiers = {}, -- style for identifiers
+					functions = {}, -- style for functions
+					variables = {}, -- style for variables
+					booleans = {}, -- style for booleans
+				},
+				integrations = { -- You can disable/enable integrations
+					alpha = true,
+					cmp = true,
+					flash = true,
+					gitsigns = true,
+					hop = false,
+					indent_blankline = true,
+					lazy = true,
+					lsp = true,
+					markdown = true,
+					mason = true,
+					navic = false,
+					neo_tree = false,
+					neogit = false,
+					neorg = false,
+					noice = true,
+					notify = true,
+					rainbow_delimiters = true,
+					telescope = true,
+					treesitter = true,
+				},
+				highlight_overrides = {}
+			})
+			-- vim.cmd("colorscheme oldworld") -- Uncomment to use OldWorld
+		end,
+	},
+
+	-- Dracula Theme (Official Dracula colorscheme for Neovim)
+	{
+		"Mofiqul/dracula.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("dracula").setup({
+				-- show the '~' characters after the end of buffers
+				show_end_of_buffer = true, -- default false
+				-- use transparent background
+				transparent_bg = false, -- default false
+				-- set custom lualine background color
+				lualine_bg_color = nil, -- default nil
+				-- set italic comment
+				italic_comment = true, -- default false
+				-- overrides the default highlights with table see `:h synIDattr`
+				overrides = {},
+				-- You can use overrides as table like this
+				-- overrides = {
+				--   NonText = { fg = "white" }, -- set NonText fg to white
+				--   NvimTreeIndentMarker = { link = "Comment" }, -- link to Comment
+				--   ToggleTerm = { fg = "white" },
+				-- },
+			})
+			-- vim.cmd("colorscheme dracula") -- Uncomment to use Dracula
+		end,
+	},
+
 	{ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -580,15 +772,6 @@ require("lazy").setup({
 	"tpope/vim-fugitive",
 	"lewis6991/gitsigns.nvim",
 	{
-		"baliestri/aura-theme",
-		lazy = false,
-		priority = 1000,
-		config = function(plugin)
-			vim.opt.rtp:append(plugin.dir .. "/packages/neovim")
-			vim.cmd([[colorscheme aura-dark]])
-		end,
-	},
-	{
 		"nvim-lualine/lualine.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
@@ -662,7 +845,6 @@ require("lazy").setup({
 			})
 		end,
 	},
-	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 	{
 		"windwp/nvim-ts-autotag",
 		ft = { "html", "javascript", "javascriptreact", "typescript", "typescriptreact" },
@@ -749,4 +931,222 @@ require("lazy").setup({
 		},
 	},
 	require("plugins.harpoon"),
+	
+	-- Theme picker with live preview
+	{
+		"zaldih/themery.nvim",
+		lazy = false,
+		config = function()
+			require("themery").setup({
+				themes = {
+					-- Catppuccin variants
+					{
+						name = "Catppuccin Latte",
+						colorscheme = "catppuccin",
+						before = [[
+							require("catppuccin").setup({
+								flavour = "latte",
+								background = { light = "latte", dark = "mocha" },
+								transparent_background = false,
+								show_end_of_buffer = false,
+								term_colors = false,
+								dim_inactive = { enabled = false },
+								no_italic = false,
+								no_bold = false,
+								no_underline = false,
+								styles = {
+									comments = { "italic" },
+									conditionals = { "italic" },
+									loops = {},
+									functions = {},
+									keywords = {},
+									strings = {},
+									variables = {},
+									numbers = {},
+									booleans = {},
+									properties = {},
+									types = {},
+									operators = {},
+								},
+								color_overrides = {},
+								custom_highlights = {},
+								integrations = {
+									cmp = true,
+									gitsigns = true,
+									nvimtree = true,
+									telescope = true,
+									notify = false,
+									mini = false,
+								},
+							})
+						]],
+					},
+					{
+						name = "Catppuccin Frappe",
+						colorscheme = "catppuccin",
+						before = [[
+							require("catppuccin").setup({
+								flavour = "frappe",
+								background = { light = "latte", dark = "mocha" },
+								transparent_background = false,
+								show_end_of_buffer = false,
+								term_colors = false,
+								dim_inactive = { enabled = false },
+								no_italic = false,
+								no_bold = false,
+								no_underline = false,
+								styles = {
+									comments = { "italic" },
+									conditionals = { "italic" },
+									loops = {},
+									functions = {},
+									keywords = {},
+									strings = {},
+									variables = {},
+									numbers = {},
+									booleans = {},
+									properties = {},
+									types = {},
+									operators = {},
+								},
+								color_overrides = {},
+								custom_highlights = {},
+								integrations = {
+									cmp = true,
+									gitsigns = true,
+									nvimtree = true,
+									telescope = true,
+									notify = false,
+									mini = false,
+								},
+							})
+						]],
+					},
+					{
+						name = "Catppuccin Macchiato",
+						colorscheme = "catppuccin",
+						before = [[
+							require("catppuccin").setup({
+								flavour = "macchiato",
+								background = { light = "latte", dark = "mocha" },
+								transparent_background = false,
+								show_end_of_buffer = false,
+								term_colors = false,
+								dim_inactive = { enabled = false },
+								no_italic = false,
+								no_bold = false,
+								no_underline = false,
+								styles = {
+									comments = { "italic" },
+									conditionals = { "italic" },
+									loops = {},
+									functions = {},
+									keywords = {},
+									strings = {},
+									variables = {},
+									numbers = {},
+									booleans = {},
+									properties = {},
+									types = {},
+									operators = {},
+								},
+								color_overrides = {},
+								custom_highlights = {},
+								integrations = {
+									cmp = true,
+									gitsigns = true,
+									nvimtree = true,
+									telescope = true,
+									notify = false,
+									mini = false,
+								},
+							})
+						]],
+					},
+					{
+						name = "Catppuccin Mocha",
+						colorscheme = "catppuccin",
+						before = [[
+							require("catppuccin").setup({
+								flavour = "mocha",
+								background = { light = "latte", dark = "mocha" },
+								transparent_background = false,
+								show_end_of_buffer = false,
+								term_colors = false,
+								dim_inactive = { enabled = false },
+								no_italic = false,
+								no_bold = false,
+								no_underline = false,
+								styles = {
+									comments = { "italic" },
+									conditionals = { "italic" },
+									loops = {},
+									functions = {},
+									keywords = {},
+									strings = {},
+									variables = {},
+									numbers = {},
+									booleans = {},
+									properties = {},
+									types = {},
+									operators = {},
+								},
+								color_overrides = {},
+								custom_highlights = {},
+								integrations = {
+									cmp = true,
+									gitsigns = true,
+									nvimtree = true,
+									telescope = true,
+									notify = false,
+									mini = false,
+								},
+							})
+						]],
+					},
+					-- Other themes
+					{
+						name = "Tokyo Dark",
+						colorscheme = "tokyodark",
+					},
+					{
+						name = "Vague",
+						colorscheme = "vague",
+					},
+					{
+						name = "OldWorld",
+						colorscheme = "oldworld",
+					},
+					{
+						name = "Dracula",
+						colorscheme = "dracula",
+					},
+				},
+				livePreview = true,
+				globalBefore = [[
+					-- Reset any theme-specific settings before applying new theme
+				]],
+				globalAfter = [[
+					-- Apply our custom highlighting after theme change
+					vim.cmd("doautocmd ColorScheme")
+				]],
+			})
+			
+			-- Set default theme if none is saved
+			local current_theme = require("themery").getCurrentTheme()
+			if not current_theme then
+				vim.cmd("colorscheme catppuccin")
+			end
+		end,
+	},
 })
+
+-- ========================================
+-- DEFAULT COLORSCHEME SELECTION
+-- ========================================
+-- Theme selection is now handled by Themery plugin
+-- The plugin will automatically load the last selected theme on startup
+-- Use :ChangeTheme or <leader>t to change themes
+
+-- If no theme is selected via Themery, Neovim will use its default
+
