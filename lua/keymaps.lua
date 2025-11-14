@@ -87,7 +87,15 @@ vim.api.nvim_set_keymap("n", "<leader>nn", ":Noice dismiss<CR>", { noremap = tru
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "go",
 	callback = function()
-		vim.keymap.set("n", "<leader>e", "<cmd>GoIfErr<cr>", { silent = true, noremap = true })
+		vim.keymap.set("n", "<leader>e", function()
+			-- Check if we're in a valid Go context before running GoIfErr
+			local line = vim.api.nvim_get_current_line()
+			if line:match("err%s*:=") or line:match("err%s*!=") or line:match("if%s+err") then
+				vim.cmd("GoIfErr")
+			else
+				vim.notify("GoIfErr: No error variable found on current line", vim.log.levels.WARN)
+			end
+		end, { silent = true, noremap = true, desc = "Generate if err != nil block" })
 	end,
 })
 

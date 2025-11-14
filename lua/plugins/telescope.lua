@@ -19,6 +19,29 @@ return {
               ['<C-d>'] = false,
             },
           },
+          -- Custom highlighting to make text white
+          color_devicons = true,
+          set_env = { ['COLORTERM'] = 'truecolor' },
+          prompt_prefix = "🔍 ",
+          selection_caret = "❯ ",
+          entry_prefix = "  ",
+          initial_mode = "insert",
+          selection_strategy = "reset",
+          sorting_strategy = "ascending",
+          layout_strategy = "horizontal",
+          layout_config = {
+            horizontal = {
+              prompt_position = "top",
+              preview_width = 0.55,
+              results_width = 0.8,
+            },
+            vertical = {
+              mirror = false,
+            },
+            width = 0.87,
+            height = 0.80,
+            preview_cutoff = 120,
+          },
           vimgrep_arguments = {
             'rg',
             '--color=never',
@@ -109,6 +132,33 @@ return {
       -- Load extensions
       pcall(telescope.load_extension, 'fzf')
       pcall(telescope.load_extension, 'git_worktree')
+
+      -- Custom highlight groups to make Telescope text white
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        pattern = "*",
+        callback = function()
+          -- Telescope highlights
+          vim.api.nvim_set_hl(0, "TelescopePromptPrefix", { fg = "#ffffff", bold = true })
+          vim.api.nvim_set_hl(0, "TelescopePromptTitle", { fg = "#ffffff", bold = true })
+          vim.api.nvim_set_hl(0, "TelescopePromptCounter", { fg = "#ffffff" })
+          vim.api.nvim_set_hl(0, "TelescopePromptBorder", { fg = "#ffffff" })
+          vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { fg = "#ffffff", bold = true })
+          vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { fg = "#ffffff" })
+          vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { fg = "#ffffff", bold = true })
+          vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { fg = "#ffffff" })
+          vim.api.nvim_set_hl(0, "TelescopeNormal", { fg = "#ffffff" })
+          vim.api.nvim_set_hl(0, "TelescopeSelection", { fg = "#ffffff", bg = "#404040" })
+          vim.api.nvim_set_hl(0, "TelescopeSelectionCaret", { fg = "#ffffff" })
+          vim.api.nvim_set_hl(0, "TelescopeMultiSelection", { fg = "#ffffff" })
+          vim.api.nvim_set_hl(0, "TelescopeMatching", { fg = "#ffffff", bold = true })
+          vim.api.nvim_set_hl(0, "TelescopePromptNormal", { fg = "#ffffff" })
+          vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { fg = "#ffffff" })
+          vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { fg = "#ffffff" })
+        end,
+      })
+
+      -- Trigger the highlight setup
+      vim.cmd("doautocmd ColorScheme")
 
       -- Custom finder function to exclude node_modules
       local function find_files_no_node_modules()

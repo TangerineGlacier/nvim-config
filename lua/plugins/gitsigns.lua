@@ -1,12 +1,24 @@
 require('gitsigns').setup {
   signs = {
-    add = { text = '+' },
-    change = { text = '~' },
-    delete = { text = '_' },
-    topdelete = { text = '‾' },
-    changedelete = { text = '~' },
+    add = { text = '+', show_count = false },
+    change = { text = '~', show_count = false },
+    delete = { text = '_', show_count = false },
+    topdelete = { text = '‾', show_count = false },
+    changedelete = { text = '~', show_count = false },
   },
   current_line_blame = false,
+  sign_priority = 6,
+  update_debounce = 100,
+  status_formatter = nil, -- Disable status formatter
+  max_file_length = 40000,
+  preview_config = {
+    -- Options passed to nvim_open_win
+    border = 'single',
+    style = 'minimal',
+    relative = 'cursor',
+    row = 0,
+    col = 1
+  },
   on_attach = function(bufnr)
     local gs = package.loaded.gitsigns
 

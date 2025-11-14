@@ -28,7 +28,10 @@ require("nvim-treesitter.configs").setup({
 	},
 
 	highlight = { enable = true },
-	indent = { enable = true },
+	indent = { 
+		enable = true,
+		disable = { "markdown" }, -- Disable indent for markdown to prevent character truncation
+	},
 	incremental_selection = {
 		enable = true,
 		keymaps = {

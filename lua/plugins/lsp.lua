@@ -4,6 +4,18 @@
 vim.keymap.set('n', '<leader>di', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
+-- Diagnostic icons configuration
+vim.diagnostic.config({
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN]  = " ",
+      [vim.diagnostic.severity.INFO]  = "󰋼 ",
+      [vim.diagnostic.severity.HINT]  = "󰌵 ",
+    },
+  },
+})
+
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
@@ -76,7 +88,6 @@ require('mason-lspconfig').setup({
     'rust_analyzer', 
     'pyright', 
     'jsonls',
-    'golangci_lint_ls',
     'html',      -- HTML
     'gopls',
     'tailwindcss', -- Tailwind CSS
@@ -94,7 +105,6 @@ local servers = {
   'pyright', 
   -- 'ts_ls', -- Configured separately below
   'jsonls',
-  'golangci_lint_ls',
   'html',      -- HTML
   'gopls',
   'tailwindcss', -- Tailwind CSS
@@ -159,11 +169,12 @@ for _, lsp in ipairs(servers) do
     }
   end
 
-  require('lspconfig')[lsp].setup(config)
+  vim.lsp.config(lsp, config)
+  vim.lsp.enable(lsp)
 end
 
 -- Configure TypeScript server with nvim-lsp-ts-utils for better auto-imports
-require('lspconfig').ts_ls.setup({
+vim.lsp.config('ts_ls', {
   on_attach = function(client, bufnr)
     -- Setup nvim-lsp-ts-utils for enhanced TypeScript functionality
     local ts_utils = require('nvim-lsp-ts-utils')
@@ -230,6 +241,7 @@ require('lspconfig').ts_ls.setup({
     hostInfo = "neovim",
   },
 })
+vim.lsp.enable('ts_ls')
 
 -- Turn on lsp status information
 require('fidget').setup()
@@ -241,7 +253,7 @@ local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
-require('lspconfig').lua_ls.setup {
+vim.lsp.config('lua_ls', {
   on_attach = on_attach,
   capabilities = capabilities,
   settings = {
@@ -263,7 +275,8 @@ require('lspconfig').lua_ls.setup {
       telemetry = { enable = false },
     },
   },
-}
+})
+vim.lsp.enable('lua_ls')
 
 vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { silent = true, noremap = true })
 

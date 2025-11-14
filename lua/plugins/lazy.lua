@@ -28,6 +28,8 @@ require("lazy").setup({
 		config = function()
 			require("neo-tree").setup({
 				close_if_last_window = true,
+				enable_git_status = false,
+				git_status_async = false,
 				window = {
 					width = 30,
 					mappings = {
@@ -64,6 +66,35 @@ require("lazy").setup({
 							"**/build/**",
 						},
 					},
+					git_status = {
+						symbols = {
+							-- Change type
+							added     = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
+							modified  = "", -- or "✹", but this is redundant info if you use git_status_colors on the name
+							deleted   = "", -- this can only be used in the git_status source
+							renamed   = "", -- this can only be used in the git_status source
+							untracked = "", -- or "?", but this is redundant info if you use git_status_colors on the name
+							ignored   = "", -- this can only be used in the git_status source
+							unstaged  = "", -- this can only be used in the git_status source
+							staged    = "", -- this can only be used in the git_status source
+							conflict  = "", -- this can only be used in the git_status source
+						}
+					},
+					use_libuv_file_watcher = false,
+				},
+				git_status = {
+					symbols = {
+						-- Change type
+						added     = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
+						modified  = "", -- or "✹", but this is redundant info if you use git_status_colors on the name
+						deleted   = "", -- this can only be used in the git_status source
+						renamed   = "", -- this can only be used in the git_status source
+						untracked = "", -- or "?", but this is redundant info if you use git_status_colors on the name
+						ignored   = "", -- this can only be used in the git_status source
+						unstaged  = "", -- this can only be used in the git_status source
+						staged    = "", -- this can only be used in the git_status source
+						conflict  = "", -- this can only be used in the git_status source
+					}
 				},
 			})
 			vim.keymap.set("n", "<space>e", function()
@@ -122,14 +153,9 @@ require("lazy").setup({
 		"ThePrimeagen/vim-be-good",
 		cmd = "VimBeGood", -- Loads only when you run :VimBeGood
 	},
-	-- Example for lazy.nvim
-	{
-		"MeanderingProgrammer/render-markdown.nvim",
-		config = true,
-		ft = { "markdown" }, -- optional: only load for markdown
-	},
 	{ "echasnovski/mini.nvim", version = false },
 	{ "vuciv/golf" },
+	{ "tpope/vim-fugitive" },
 	{
 		"folke/snacks.nvim",
 		priority = 1000,
@@ -145,7 +171,7 @@ require("lazy").setup({
 					{ section = "startup" },
 					{
 						section = "terminal",
-						cmd = "pokemon-colorscripts -n arbok --no-title; sleep .1",
+						cmd = "pokemon-colorscripts -n garchomp --no-title; sleep .1",
 						random = 10,
 						pane = 2,
 						indent = 8,
@@ -278,13 +304,6 @@ require("lazy").setup({
 					})
 				end,
 			},
-			{
-				"<leader>d",
-				function()
-					Snacks.dashboard()
-				end,
-				desc = "Open Dashboard",
-			},
 		},
 		init = function()
 			Snacks = require("snacks")
@@ -341,7 +360,6 @@ require("lazy").setup({
 	},
 
 	"onsails/lspkind.nvim",
-	"preservim/vim-pencil",
 	"folke/zen-mode.nvim",
 	"tpope/vim-obsession",
 	"ThePrimeagen/git-worktree.nvim",
@@ -627,6 +645,72 @@ require("lazy").setup({
 		end,
 	},
 
+	-- Vesper Theme (Port of VS Code Vesper theme)
+	{
+		"datsfilipe/vesper.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("vesper").setup({
+				transparent = false, -- Boolean: Sets the background to transparent
+				italics = {
+					comments = true, -- Boolean: Italicizes comments
+					keywords = true, -- Boolean: Italicizes keywords
+					functions = true, -- Boolean: Italicizes functions
+					strings = true, -- Boolean: Italicizes strings
+					variables = true, -- Boolean: Italicizes variables
+				},
+				overrides = {}, -- A dictionary of group names, can be a function returning a dictionary or a table.
+				palette_overrides = {}
+			})
+			-- vim.cmd("colorscheme vesper") -- Uncomment to use Vesper
+		end,
+	},
+
+	-- Rosé Pine (three variants: main, moon, dawn)
+	{
+		"rose-pine/neovim",
+		name = "rose-pine",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			-- Configure before selecting a Rosé Pine variant via Themery
+			require("rose-pine").setup({
+				variant = "auto",
+				dark_variant = "main",
+				enable = { terminal = true, legacy_highlights = true, migrations = true },
+				styles = { bold = true, italic = true, transparency = false },
+			})
+			-- vim.cmd("colorscheme rose-pine") -- Uncomment to use Rosé Pine directly
+		end,
+	},
+
+	-- Tokyo Night (multiple styles: night, storm, day, moon)
+	{
+		"folke/tokyonight.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			-- Style is selected by colorscheme name (e.g. tokyonight, tokyonight-moon) or setup option
+			require("tokyonight").setup({})
+			-- vim.cmd("colorscheme tokyonight") -- Uncomment to use Tokyo Night directly
+		end,
+	},
+
+	-- Oxocarbon
+	{
+		"nyoom-engineering/oxocarbon.nvim",
+		lazy = false,
+		priority = 1000,
+	},
+
+	-- Sonokai
+	{
+		"sainnhe/sonokai",
+		lazy = false,
+		priority = 1000,
+	},
+
 	{ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -670,7 +754,10 @@ require("lazy").setup({
 						select = true,
 					}),
 					["<Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
+						local suggestion = require('supermaven-nvim.completion_preview')
+						if suggestion.has_suggestion() then
+							suggestion.on_accept_suggestion()
+						elseif cmp.visible() then
 							cmp.select_next_item()
 						elseif luasnip.expand_or_jumpable() then
 							luasnip.expand_or_jump()
@@ -692,8 +779,46 @@ require("lazy").setup({
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
 					{ name = "neorg" },
+					{ name = "supermaven" },
 				},
 			})
+		end,
+	},
+
+	-- Supermaven AI Code Completion
+	{
+		"supermaven-inc/supermaven-nvim",
+		config = function()
+			require("supermaven-nvim").setup({
+				keymaps = {
+					accept_suggestion = "<Tab>",
+					clear_suggestion = "<C-]>",
+					accept_word = "<C-j>",
+				},
+				ignore_filetypes = { "markdown", "mdx", "txt" },
+				color = {
+					suggestion_color = "#888888",
+					cterm = 244,
+				},
+				log_level = "info",
+				disable_inline_completion = false,
+				disable_keymaps = false,
+			})
+			
+			-- Set up custom highlight for Supermaven suggestions
+			vim.api.nvim_create_autocmd("ColorScheme", {
+				pattern = "*",
+				callback = function()
+					vim.api.nvim_set_hl(0, "SupermavenSuggestion", {
+						fg = "#888888",
+						italic = true,
+						cterm = { italic = true }
+					})
+				end,
+			})
+			
+			-- Trigger the highlight setup
+			vim.cmd("doautocmd ColorScheme")
 		end,
 	},
 
@@ -737,7 +862,7 @@ require("lazy").setup({
 				json = { "prettier" },
 				jsonc = { "prettier" },
 				yaml = { "prettier" },
-				markdown = { "prettier" },
+				markdown = {}, -- Explicitly disable formatting for markdown to prevent character truncation
 				lua = { "stylua" },
 				sh = { "shfmt" },
 				go = { "gofmt", "goimports" },
@@ -932,6 +1057,99 @@ require("lazy").setup({
 	},
 	require("plugins.harpoon"),
 	
+	-- Obsidian integration plugins
+	{
+		"epwalsh/obsidian.nvim",
+		version = "*", -- recommended, use latest release instead of latest commit
+		lazy = true,
+		ft = "markdown", -- load only for markdown files
+		-- Replace the above line with this if you want to load the plugin unconditionally:
+		-- event = {
+		--   -- If you want to use the home screen 'code' action from the Obsidian app, you can use
+		--   -- the home screen when opening a markdown file with Obsidian.
+		--   "BufReadPre " .. vim.fn.expand "~" .. "/Documents/notebook/**.md",
+		-- },
+		dependencies = {
+			-- Required.
+			"nvim-lua/plenary.nvim",
+			-- see below for full list of optional dependencies 👇
+		},
+		opts = {
+			workspaces = {
+				{
+					name = "personal",
+					path = "~/Documents/notebook",
+				},
+				-- {
+				--   name = "work",
+				--   path = "~/vaults/work", -- absolute path
+				-- },
+			},
+			-- see below for full list of options 👇
+		},
+	},
+	
+	-- Markdown preview and rendering
+	{
+		"iamcco/markdown-preview.nvim",
+		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+		ft = { "markdown" },
+		build = function() vim.fn["mkdp#util#install"]() end,
+		config = function()
+			vim.g.mkdp_auto_start = 0
+			vim.g.mkdp_auto_close = 1
+			vim.g.mkdp_refresh_slow = 0
+			vim.g.mkdp_command_for_global = 0
+			vim.g.mkdp_open_to_the_world = 0
+			vim.g.mkdp_open_ip = ""
+			vim.g.mkdp_browser = ""
+			vim.g.mkdp_echo_preview_url = 0
+			vim.g.mkdp_browserfunc = ""
+			vim.g.mkdp_preview_options = {
+				mkit = {},
+				katex = {},
+				uml = {},
+				maid = {},
+				disable_sync_scroll = 0,
+				sync_scroll_type = "middle",
+				hide_yaml_meta = 1,
+				sequence_diagrams = {},
+				flowchart_diagrams = {},
+				footnote_anchor_parentheses = 0,
+			}
+			vim.g.mkdp_markdown_css = ""
+			vim.g.mkdp_highlight_css = ""
+			vim.g.mkdp_port = ""
+			vim.g.mkdp_page_title = "「${name}」"
+		end,
+	},
+	
+	-- Better markdown support
+	{
+		"preservim/vim-markdown",
+		ft = "markdown",
+		config = function()
+			vim.g.markdown_folding = 0
+			vim.g.markdown_fold_style = "manual"
+			vim.g.markdown_enable_mappings = 1
+			vim.g.markdown_enable_insert_mode_mappings = 1
+			vim.g.markdown_enable_conceal = 0 -- Disable conceal to prevent character truncation
+			vim.g.markdown_enable_spell_checking = 0
+		end,
+	},
+	
+	-- Wiki-style links and navigation
+	{
+		"jbyuki/nabla.nvim",
+		ft = "markdown",
+		config = function()
+			require("nabla").enable_virt({
+				autogen = true,
+				use_virt_lines = true,
+			})
+		end,
+	},
+	
 	-- Theme picker with live preview
 	{
 		"zaldih/themery.nvim",
@@ -1121,6 +1339,40 @@ require("lazy").setup({
 						name = "Dracula",
 						colorscheme = "dracula",
 					},
+					{
+						name = "Vesper",
+						colorscheme = "vesper",
+					},
+						-- Newly added themes
+						{
+							name = "Rose Pine",
+							colorscheme = "rose-pine",
+						},
+						-- TokyoNight variants
+						{
+							name = "Tokyo Night (Night)",
+							colorscheme = "tokyonight-night",
+						},
+						{
+							name = "Tokyo Night (Moon)",
+							colorscheme = "tokyonight-moon",
+						},
+						{
+							name = "Tokyo Night (Storm)",
+							colorscheme = "tokyonight-storm",
+						},
+						{
+							name = "Tokyo Night (Day)",
+							colorscheme = "tokyonight-day",
+						},
+						{
+							name = "Oxocarbon",
+							colorscheme = "oxocarbon",
+						},
+						{
+							name = "Sonokai",
+							colorscheme = "sonokai",
+						},
 				},
 				livePreview = true,
 				globalBefore = [[

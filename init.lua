@@ -4,7 +4,14 @@ vim.g.maplocalleader = " "
 -- Use the system clipboard for all yank, delete, change, and put operations
 vim.opt.clipboard = "unnamedplus"
 vim.o.mouse = "a"
-vim.o.termguicolors = true -- Better color support in terminal
+-- True color support - modern Neovim approach
+vim.o.termguicolors = true -- Enable true color support
+
+-- For tmux compatibility (only needed for older tmux versions)
+if vim.env.TMUX then
+  vim.cmd('let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"')
+  vim.cmd('let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"')
+end
 vim.o.splitright = true -- Open vertical splits to the right
 vim.o.splitbelow = true -- Open horizontal splits below
 
@@ -142,6 +149,7 @@ require("plugins.prettier")
 
 require("plugins.highlights") -- Enable to remove highlighting effects while keeping colors
 require("plugins.harpoon")
+require("plugins.obsidian") -- Obsidian integration
 vim.keymap.set("n", "<Esc>p", "<cmd>Telescope find_files<cr>", { noremap = true, silent = true })
 
 -- Auto-save when leaving insert mode

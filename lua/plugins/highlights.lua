@@ -7,6 +7,11 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     callback = function()
         -- Get all highlight groups and remove highlighting effects
         local function clear_highlight_effects(group_name)
+            -- Skip Normal group to preserve background color
+            if group_name == "Normal" then
+                return
+            end
+            
             local hl = vim.api.nvim_get_hl(0, { name = group_name })
             if hl.fg then
                 vim.api.nvim_set_hl(0, group_name, {
@@ -23,7 +28,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
             end
         end
         
-        -- Clear all syntax highlighting groups
+        -- Clear all syntax highlighting groups (excluding Normal to preserve background)
         local syntax_groups = {
             -- Basic syntax groups
             "Statement", "Keyword", "Conditional", "Repeat", "Label", "Operator", 
@@ -83,7 +88,15 @@ vim.api.nvim_create_autocmd("ColorScheme", {
             "Question", "QuickFixLine", "Search", "SpecialKey", "SpellBad", "SpellCap",
             "SpellLocal", "SpellRare", "StatusLine", "StatusLineNC", "TabLine", "TabLineFill",
             "TabLineSel", "Title", "Visual", "VisualNOS", "WarningMsg", "Whitespace",
-            "WildMenu", "WinBar", "WinBarNC", "WinSeparator"
+            "WildMenu", "WinBar", "WinBarNC", "WinSeparator",
+            -- Git signs
+            "GitSignsAdd", "GitSignsChange", "GitSignsDelete", "GitSignsTopDelete", "GitSignsChangedelete",
+            "GitSignsAddNr", "GitSignsChangeNr", "GitSignsDeleteNr", "GitSignsTopDeleteNr", "GitSignsChangedeleteNr",
+            "GitSignsAddLn", "GitSignsChangeLn", "GitSignsDeleteLn", "GitSignsTopDeleteLn", "GitSignsChangedeleteLn",
+            "GitSignsAddPreview", "GitSignsChangePreview", "GitSignsDeletePreview",
+            -- Neo-tree signs
+            "NeoTreeGitAdded", "NeoTreeGitModified", "NeoTreeGitDeleted", "NeoTreeGitRenamed", "NeoTreeGitUntracked",
+            "NeoTreeGitIgnored", "NeoTreeGitConflict", "NeoTreeGitStaged", "NeoTreeGitUnstaged"
         }
         
         for _, group in ipairs(syntax_groups) do
@@ -108,37 +121,5 @@ vim.api.nvim_create_autocmd("VimEnter", {
     end,
 })
 
--- Uncomment the section below if you want custom HTML highlights back:
---[[
-local function setup_html_highlights()
-    local function highlight_exists(name)
-        return vim.fn.hlexists(name) == 1
-    end
-    
-    if not highlight_exists('htmlTag') then
-        vim.api.nvim_set_hl(0, 'htmlTag', { fg = '#F7768E' })
-    end
-    if not highlight_exists('htmlTagName') then
-        vim.api.nvim_set_hl(0, 'htmlTagName', { fg = '#F7768E' })
-    end
-    if not highlight_exists('htmlArg') then
-        vim.api.nvim_set_hl(0, 'htmlArg', { fg = '#BB9AF7', italic = true })
-    end
-    if not highlight_exists('htmlString') then
-        vim.api.nvim_set_hl(0, 'htmlString', { fg = '#9ECE6A' })
-    end
-    if not highlight_exists('htmlSpecialTagName') then
-        vim.api.nvim_set_hl(0, 'htmlSpecialTagName', { fg = '#F7768E' })
-    end
-    if not highlight_exists('htmlEndTag') then
-        vim.api.nvim_set_hl(0, 'htmlEndTag', { fg = '#F7768E' })
-    end
-end
 
-vim.api.nvim_create_autocmd("ColorScheme", {
-    pattern = "*",
-    callback = setup_html_highlights,
-})
 
-setup_html_highlights()
---]] 
