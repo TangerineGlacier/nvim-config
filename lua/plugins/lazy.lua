@@ -37,10 +37,14 @@ require("lazy").setup({
 					},
 				},
 				filesystem = {
+					-- Auto-reveal file in tree when opened
+					reveal_file = "current",
+					reveal_force_cwd = true,
 					filtered_items = {
 						visible = false,
-						hide_dotfiles = false,
-						hide_gitignored = false,
+						hide_dotfiles = true,
+						hide_gitignored = true,
+						hide_hidden = true,
 						hide_by_name = {
 							"node_modules",
 							".DS_Store",
@@ -100,6 +104,36 @@ require("lazy").setup({
 			vim.keymap.set("n", "<space>e", function()
 				require("neo-tree.command").execute({ toggle = true })
 			end, { desc = "Toggle Neotree" })
+
+			-- Auto-reveal file in neo-tree when opening/switching to a buffer
+			-- This automatically expands folders to show the current file, like VS Code
+			vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+				group = vim.api.nvim_create_augroup("NeotreeAutoReveal", { clear = true }),
+				callback = function()
+					local file_path = vim.api.nvim_buf_get_name(0)
+					-- Only process if it's a real file (not empty, not a directory, not a special buffer)
+					if file_path ~= "" 
+						and vim.fn.isdirectory(file_path) == 0 
+						and vim.fn.filereadable(file_path) == 1 then
+						
+						-- Use neo-tree's manager to check if any neo-tree window is open
+						local manager = require("neo-tree.sources.manager")
+						local state = manager.get_state("filesystem")
+						
+						-- Reveal the file in neo-tree if it's open
+						if state and state.tree then
+							pcall(function()
+								-- This will automatically expand only the necessary folders
+								require("neo-tree.command").execute({ 
+									action = "reveal_file",
+									path = file_path,
+									reveal_force_cwd = true,
+								})
+							end)
+						end
+					end
+				end,
+			})
 		end,
 	},
 	{
@@ -171,7 +205,7 @@ require("lazy").setup({
 					{ section = "startup" },
 					{
 						section = "terminal",
-						cmd = "pokemon-colorscripts -n garchomp --no-title; sleep .1",
+						cmd = "pokemon-colorscripts -n rayquaza --no-title; sleep .1",
 						random = 10,
 						pane = 2,
 						indent = 8,
