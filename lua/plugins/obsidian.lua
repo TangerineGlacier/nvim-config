@@ -25,7 +25,7 @@ obsidian.setup({
 	
 	-- Set the templates directory (create if it doesn't exist)
 	templates = {
-		subdir = "templates",
+		folder = "templates",
 		date_format = "%Y-%m-%d-%H%M",
 		time_format = "%H:%M",
 	},

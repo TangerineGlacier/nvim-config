@@ -22,6 +22,9 @@ vim.o.smartcase = true
 vim.o.updatetime = 250
 vim.wo.signcolumn = "yes"
 
+-- Enable autoread to detect external file changes
+vim.o.autoread = true
+
 -- Set colorscheme
 --vim.cmd [[colorscheme onedark]]
 -- vim.cmd.colorscheme "catppuccin"
@@ -96,3 +99,55 @@ vim.opt.wildignore = vim.opt.wildignore + {
   "*.ext",
   "*.ext.*",
 }
+
+-- Auto-reload files when changed externally
+local auto_reload_group = vim.api.nvim_create_augroup("AutoReload", { clear = true })
+
+-- Function to check and reload file if changed externally
+local function check_and_reload()
+	-- Skip if in command window
+	if vim.fn.getcmdwintype() ~= "" then
+		return
+	end
+	
+	-- Skip if buffer is not a file or is modified (has unsaved changes)
+	local buf = vim.api.nvim_get_current_buf()
+	if vim.bo[buf].buftype ~= "" or vim.bo[buf].modified then
+		return
+	end
+	
+	-- Check if file exists and is readable
+	local filename = vim.api.nvim_buf_get_name(buf)
+	if filename == "" or vim.fn.filereadable(filename) == 0 then
+		return
+	end
+	
+	-- Check for external changes
+	vim.cmd("checktime")
+end
+
+-- Check for file changes when buffer gets focus or periodically
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
+	group = auto_reload_group,
+	pattern = "*",
+	callback = check_and_reload,
+})
+
+-- Periodic check (every updatetime ms when cursor is idle)
+vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+	group = auto_reload_group,
+	pattern = "*",
+	callback = check_and_reload,
+})
+
+-- Reload buffer when file changes externally
+vim.api.nvim_create_autocmd("FileChangedShellPost", {
+	group = auto_reload_group,
+	pattern = "*",
+	callback = function()
+		vim.notify("File changed externally. Buffer reloaded.", vim.log.levels.INFO, {
+			title = "Auto-reload",
+			timeout = 2000,
+		})
+	end,
+})
