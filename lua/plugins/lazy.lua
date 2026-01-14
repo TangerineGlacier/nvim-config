@@ -745,6 +745,48 @@ require("lazy").setup({
 		priority = 1000,
 	},
 
+	-- OneNord Theme (Nord + Atom One Dark)
+	{
+		"rmehri01/onenord.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("onenord").setup({
+				theme = "dark", -- "dark" or "light". Alternatively, remove the option and set vim.o.background instead
+				borders = true, -- Split window borders
+				fade_nc = false, -- Fade non-current windows, making them more distinguishable
+				styles = {
+					comments = "NONE",
+					strings = "NONE",
+					keywords = "NONE",
+					functions = "NONE",
+					variables = "NONE",
+					diagnostics = "underline",
+				},
+				disable = {
+					background = false, -- Disable setting the background color
+					float_background = false, -- Disable setting the background color for floating windows
+					cursorline = false, -- Disable the cursorline
+					eob_lines = true, -- Hide the end-of-buffer lines
+				},
+				inverse = {
+					match_paren = false,
+				},
+				custom_highlights = {}, -- Overwrite default highlight groups
+				custom_colors = {}, -- Overwrite default colors
+			})
+			-- vim.cmd("colorscheme onenord") -- Uncomment to use OneNord directly
+		end,
+	},
+
+	-- Miasma Theme (Dark theme inspired by the woods)
+	{
+		"xero/miasma.nvim",
+		lazy = false,
+		priority = 1000,
+		-- No config needed - colorscheme is set via themery or manually
+	},
+
 	{ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -1191,13 +1233,13 @@ require("lazy").setup({
 		config = function()
 			require("themery").setup({
 				themes = {
-					-- Catppuccin variants
+					-- Alphabetically ordered themes
 					{
-						name = "Catppuccin Latte",
+						name = "Catppuccin Frappe",
 						colorscheme = "catppuccin",
 						before = [[
 							require("catppuccin").setup({
-								flavour = "latte",
+								flavour = "frappe",
 								background = { light = "latte", dark = "mocha" },
 								transparent_background = false,
 								show_end_of_buffer = false,
@@ -1234,11 +1276,11 @@ require("lazy").setup({
 						]],
 					},
 					{
-						name = "Catppuccin Frappe",
+						name = "Catppuccin Latte",
 						colorscheme = "catppuccin",
 						before = [[
 							require("catppuccin").setup({
-								flavour = "frappe",
+								flavour = "latte",
 								background = { light = "latte", dark = "mocha" },
 								transparent_background = false,
 								show_end_of_buffer = false,
@@ -1356,57 +1398,62 @@ require("lazy").setup({
 							})
 						]],
 					},
-					-- Other themes
 					{
-						name = "Tokyo Dark",
-						colorscheme = "tokyodark",
+						name = "Dracula",
+						colorscheme = "dracula",
 					},
 					{
-						name = "Vague",
-						colorscheme = "vague",
+						name = "Miasma",
+						colorscheme = "miasma",
 					},
 					{
 						name = "OldWorld",
 						colorscheme = "oldworld",
 					},
 					{
-						name = "Dracula",
-						colorscheme = "dracula",
+						name = "OneNord",
+						colorscheme = "onenord",
+					},
+					{
+						name = "Oxocarbon",
+						colorscheme = "oxocarbon",
+					},
+					{
+						name = "Rose Pine",
+						colorscheme = "rose-pine",
+					},
+					{
+						name = "Sonokai",
+						colorscheme = "sonokai",
+					},
+					{
+						name = "Tokyo Dark",
+						colorscheme = "tokyodark",
+					},
+					{
+						name = "Tokyo Night (Day)",
+						colorscheme = "tokyonight-day",
+					},
+					{
+						name = "Tokyo Night (Moon)",
+						colorscheme = "tokyonight-moon",
+					},
+					{
+						name = "Tokyo Night (Night)",
+						colorscheme = "tokyonight-night",
+					},
+					{
+						name = "Tokyo Night (Storm)",
+						colorscheme = "tokyonight-storm",
+					},
+					{
+						name = "Vague",
+						colorscheme = "vague",
 					},
 					{
 						name = "Vesper",
 						colorscheme = "vesper",
 					},
-						-- Newly added themes
-						{
-							name = "Rose Pine",
-							colorscheme = "rose-pine",
-						},
-						-- TokyoNight variants
-						{
-							name = "Tokyo Night (Night)",
-							colorscheme = "tokyonight-night",
-						},
-						{
-							name = "Tokyo Night (Moon)",
-							colorscheme = "tokyonight-moon",
-						},
-						{
-							name = "Tokyo Night (Storm)",
-							colorscheme = "tokyonight-storm",
-						},
-						{
-							name = "Tokyo Night (Day)",
-							colorscheme = "tokyonight-day",
-						},
-						{
-							name = "Oxocarbon",
-							colorscheme = "oxocarbon",
-						},
-						{
-							name = "Sonokai",
-							colorscheme = "sonokai",
-						},
 				},
 				livePreview = true,
 				globalBefore = [[
