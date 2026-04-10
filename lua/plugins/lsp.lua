@@ -278,7 +278,9 @@ vim.lsp.config('lua_ls', {
 })
 vim.lsp.enable('lua_ls')
 
-vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { silent = true, noremap = true })
+vim.keymap.set("n", "<leader>e", function()
+	require("neo-tree.command").execute({ toggle = true })
+end, { silent = true, noremap = true, desc = "Toggle Neotree" })
 
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'sh',

@@ -54,7 +54,7 @@ return {
             '--glob=!.git/',
             '--glob=!node_modules/',
             '--glob=!**/node_modules/',
-            '--glob=!**/node_modules/**/*',
+            '--glob=!**/node_modules/**',
             '--glob=!__pycache__/',
             '--glob=!.pytest_cache/',
             '--glob=!.venv/',
@@ -64,24 +64,17 @@ return {
             '--glob=!dist/',
             '--glob=!build/',
             '--glob=!.DS_Store',
-            '--glob=.env*',
           },
         },
         pickers = {
           find_files = {
             hidden = true,
-            grep_string = {
-              additional_args = {"--hidden"}
-            },
-            live_grep = {
-              additional_args = {"--hidden"}
-            },
             no_ignore = true,
             follow = true,
             respect_gitignore = false,
             file_ignore_patterns = {
               "node_modules",
-              "gitignore",
+              "**/node_modules/**",
             },
             find_command = {
               'rg',
@@ -89,7 +82,7 @@ return {
               '--hidden',
               '--glob=!.git/',
               '--glob=!node_modules/',
-              '--glob=!gitignore/',
+              '--glob=!**/node_modules/**',
               '--glob=!__pycache__/',
               '--glob=!.pytest_cache/',
               '--glob=!.venv/',
@@ -99,8 +92,10 @@ return {
               '--glob=!dist/',
               '--glob=!build/',
               '--glob=!.DS_Store',
-              '--glob=.env*',
             },
+          },
+          grep_string = {
+            additional_args = { "--hidden" },
           },
           live_grep = {
             additional_args = function()
@@ -108,7 +103,7 @@ return {
                 "--hidden",
                 "--glob=!.git/",
                 "--glob=!node_modules/",
-                "--glob=!gitignore/",
+                "--glob=!**/node_modules/**",
                 "--glob=!__pycache__/",
                 "--glob=!.pytest_cache/",
                 "--glob=!.venv/",
@@ -118,12 +113,11 @@ return {
                 "--glob=!dist/",
                 "--glob=!build/",
                 "--glob=!.DS_Store",
-                "--glob=.env*",
               }
             end,
             file_ignore_patterns = {
               "node_modules",
-              "gitignore",
+              "**/node_modules/**",
             },
           },
         },
@@ -160,16 +154,16 @@ return {
       -- Trigger the highlight setup
       vim.cmd("doautocmd ColorScheme")
 
-      -- Custom finder function to exclude node_modules
+      -- Custom finder: dotfiles visible, node_modules excluded
       local function find_files_no_node_modules()
         require('telescope.builtin').find_files({
-          hidden = false,
+          hidden = true,
           no_ignore = true,
           follow = true,
           respect_gitignore = false,
           file_ignore_patterns = {
             "node_modules",
-            "gitignore",
+            "**/node_modules/**",
           },
           find_command = {
             'rg',
@@ -177,7 +171,7 @@ return {
             '--hidden',
             '--glob=!.git/',
             '--glob=!node_modules/',
-            '--glob=!gitignore/',
+            '--glob=!**/node_modules/**',
             '--glob=!__pycache__/',
             '--glob=!.pytest_cache/',
             '--glob=!.venv/',
@@ -187,7 +181,6 @@ return {
             '--glob=!dist/',
             '--glob=!build/',
             '--glob=!.DS_Store',
-            '--glob=.env*',
           },
         })
       end

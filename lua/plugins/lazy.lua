@@ -20,6 +20,7 @@ require("lazy").setup({
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",
+		lazy = false,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons",
@@ -42,17 +43,24 @@ require("lazy").setup({
 					reveal_force_cwd = true,
 					filtered_items = {
 						visible = false,
-						hide_dotfiles = true,
-						hide_gitignored = true,
-						hide_hidden = true,
+						hide_dotfiles = false,
+						hide_gitignored = false,
+						hide_hidden = false,
+						-- Force .env and similar to show (takes precedence over other filters)
+						always_show = {
+							".env",
+							".env.*",
+							".envrc",
+						},
 						hide_by_name = {
+							".git",
 							"node_modules",
 							".DS_Store",
 							"__pycache__",
 							".pytest_cache",
 							".venv",
 							"venv",
-							"env",
+							-- Don't hide "env" by name: it can match ".env" and hide the file
 							"ENV",
 							"dist",
 							"build",
@@ -64,6 +72,7 @@ require("lazy").setup({
 							"**/.pytest_cache/**",
 							"**/.venv/**",
 							"**/venv/**",
+							-- Only hide dirs named "env" (path contains /env/), not file ".env"
 							"**/env/**",
 							"**/ENV/**",
 							"**/dist/**",
@@ -104,7 +113,6 @@ require("lazy").setup({
 			vim.keymap.set("n", "<space>e", function()
 				require("neo-tree.command").execute({ toggle = true })
 			end, { desc = "Toggle Neotree" })
-
 			-- Auto-reveal file in neo-tree when opening/switching to a buffer
 			-- This automatically expands folders to show the current file, like VS Code
 			vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
@@ -138,6 +146,7 @@ require("lazy").setup({
 	},
 	{
 		"NvChad/nvim-colorizer.lua",
+		event = "BufReadPost",
 		opts = {
 			user_default_options = {
 				tailwind = true,
@@ -146,21 +155,17 @@ require("lazy").setup({
 	},
 	{
 		"numToStr/Comment.nvim",
+		keys = { "gc", "gb", "<leader>cc", "<leader>bc", "<leader>c", "<leader>b" },
 		opts = {
 			toggler = {
-				--- Line-comment toggle keymap
-				line = "<leader>cc", -- cmd + /
-				--- Block-comment toggle keymap
+				line = "<leader>cc",
 				block = "<leader>bc",
 			},
 			opleader = {
-				--- Line-comment keymap
 				line = "<leader>c",
-				--- Block-comment keymap
 				block = "<leader>b",
 			},
 		},
-		lazy = false,
 	},
 	{
 		"rcarriga/nvim-notify",
@@ -188,30 +193,48 @@ require("lazy").setup({
 		cmd = "VimBeGood", -- Loads only when you run :VimBeGood
 	},
 	{ "echasnovski/mini.nvim", version = false },
-	{ "vuciv/golf" },
-	{ "tpope/vim-fugitive" },
+	{ "vuciv/golf", event = "VeryLazy" },
 	{
 		"folke/snacks.nvim",
 		priority = 1000,
-		lazy = false,
+		event = "VeryLazy",
 		---@type snacks.Config
 		opts = {
 			bigfile = { enabled = true },
 			dashboard = {
 				enabled = true,
+				-- Install colorscripts for "square" graphic: https://gitlab.com/dwt1/shell-color-scripts
+				--   cd ~/.shell-color-scripts && sudo make install
+				--   Scripts go to /opt/shell-color-scripts/colorscripts; then: colorscript -e square
 				sections = {
 					{ section = "header" },
-					{ section = "keys", gap = 1, padding = 6 },
-					{ section = "startup" },
 					{
-						section = "terminal",
-						cmd = "pokemon-colorscripts -n rayquaza --no-title; sleep .1",
-						random = 10,
 						pane = 2,
-						indent = 8,
-						height = 30,
+						section = "terminal",
+						cmd = "colorscript -e square",
+						height = 5,
+						padding = 1,
 					},
+					{ section = "keys", gap = 1, padding = 1 },
+					{ pane = 2, icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+					{ pane = 2, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+					{
+						pane = 2,
+						icon = " ",
+						title = "Git Status",
+						section = "terminal",
+						enabled = function()
+							return Snacks.git.get_root() ~= nil
+						end,
+						cmd = "git status --short --branch --renames",
+						height = 5,
+						padding = 1,
+						ttl = 5 * 60,
+						indent = 3,
+					},
+					{ section = "startup" },
 				},
+				-- Pokemon (commented out): cmd = "pokemon-colorscripts -n rayquaza --no-title; sleep .1", random = 10, pane = 2, indent = 8, height = 30
 			},
 			notifier = {
 				enabled = true,
@@ -374,17 +397,15 @@ require("lazy").setup({
 	{
 		"mistricky/codesnap.nvim",
 		build = "make",
+		cmd = "CodeSnap",
 		config = function()
-			require("codesnap").setup({
-				-- Add any custom configuration here
-			})
+			require("codesnap").setup({})
 		end,
-		-- Force a clean installation
 		force = true,
 	},
 	{
 		"NeogitOrg/neogit",
-		lazy = false,
+		cmd = "Neogit",
 		dependencies = {
 			"nvim-lua/plenary.nvim", -- required
 			"sindrets/diffview.nvim", -- optional - Diff integration
@@ -393,12 +414,12 @@ require("lazy").setup({
 		config = true,
 	},
 
-	"onsails/lspkind.nvim",
-	"folke/zen-mode.nvim",
-	"tpope/vim-obsession",
-	"ThePrimeagen/git-worktree.nvim",
+	{ "onsails/lspkind.nvim", event = "VeryLazy" },
+	{ "tpope/vim-obsession", event = "VeryLazy" },
+	{ "ThePrimeagen/git-worktree.nvim", event = "VeryLazy" },
 	{
 		"rmagatti/goto-preview",
+		event = "LspAttach",
 		config = function()
 			require("goto-preview").setup({
 				width = 120, -- Width of the floating window
@@ -425,7 +446,7 @@ require("lazy").setup({
 
 	{
 		"folke/trouble.nvim",
-		lazy = false,
+		cmd = { "Trouble", "TroubleToggle" },
 		dependencies = "nvim-tree/nvim-web-devicons",
 		config = function()
 			require("trouble").setup({
@@ -438,6 +459,7 @@ require("lazy").setup({
 
 	{
 		"folke/todo-comments.nvim",
+		event = "VeryLazy",
 		dependencies = "nvim-lua/plenary.nvim",
 		config = function()
 			require("todo-comments").setup({})
@@ -445,7 +467,34 @@ require("lazy").setup({
 	},
 
 	{
+		"folke/which-key.nvim",
+		event = "VeryLazy",
+		opts = {
+			preset = "helix",
+			win = {
+				width = 0.3,
+				height = { min = 4, max = 25 },
+				col = 9999,
+				padding = { 1, 2 },
+				title = true,
+				title_pos = "center",
+				border = "rounded",
+			},
+		},
+		keys = {
+			{
+				"<leader>?",
+				function()
+					require("which-key").show({ global = false })
+				end,
+				desc = "Buffer Local Keymaps (which-key)",
+			},
+		},
+	},
+
+	{
 		"folke/noice.nvim",
+		event = "VeryLazy",
 		config = function()
 			require("noice").setup({
 				-- add any options here
@@ -475,110 +524,53 @@ require("lazy").setup({
 	},
 	
 
-	"ray-x/go.nvim",
-	"ray-x/guihua.lua",
-	-- ========================================
-	-- COLORSCHEMES - Choose one by uncommenting
-	-- ========================================
-	
-	-- Vague Theme (Modern, low contrast)
+	{ "ray-x/go.nvim", ft = "go" },
+	{ "ray-x/guihua.lua", ft = "go" },
+	-- OldWorld (default) - https://github.com/dgox16/oldworld.nvim
 	{
-		"vague2k/vague.nvim",
+		"dgox16/oldworld.nvim",
 		lazy = false,
 		priority = 1000,
 		config = function()
-			require("vague").setup({
-				transparent = false, -- don't set background
-				bold = true,
-				italic = true,
-				style = {
-					boolean = "bold",
-					number = "none",
-					float = "none",
-					error = "bold",
-					comments = "italic",
-					conditionals = "none",
-					functions = "none",
-					headings = "bold",
-					operators = "none",
-					strings = "italic",
-					variables = "none",
-					keywords = "none",
-					keyword_return = "italic",
-					keywords_loop = "none",
-					keywords_label = "none",
-					keywords_exception = "none",
-					builtin_constants = "bold",
-					builtin_functions = "none",
-					builtin_types = "bold",
-					builtin_variables = "none",
-				},
-				plugins = {
-					cmp = {
-						match = "bold",
-						match_fuzzy = "bold",
-					},
-					dashboard = {
-						footer = "italic",
-					},
-					lsp = {
-						diagnostic_error = "bold",
-						diagnostic_hint = "none",
-						diagnostic_info = "italic",
-						diagnostic_ok = "none",
-						diagnostic_warn = "bold",
-					},
-					neotest = {
-						focused = "bold",
-						adapter_name = "bold",
-					},
-					telescope = {
-						match = "bold",
-					},
+			require("oldworld").setup({
+				terminal_colors = true,
+				variant = "default",
+				styles = {},
+				integrations = {
+					alpha = true,
+					cmp = true,
+					gitsigns = true,
+					indent_blankline = true,
+					lazy = true,
+					lsp = true,
+					neo_tree = true,
+					telescope = true,
+					treesitter = true,
 				},
 			})
-			-- vim.cmd("colorscheme vague") -- Uncomment to use Vague
+			vim.cmd("colorscheme oldworld")
 		end,
 	},
 
-	-- Tokyo Dark Theme (Classic dark theme)
-	{
-		"tiagovla/tokyodark.nvim",
-		opts = {
-			-- transparent_background = true,
-		},
-		config = function(_, opts)
-			require("tokyodark").setup(opts)
-			-- vim.cmd("colorscheme tokyodark") -- Uncomment to use Tokyo Dark
-		end,
-	},
-
-	-- Catppuccin Theme (Popular, multiple variants)
+	-- Catppuccin (optional: :colorscheme catppuccin)
 	{
 		"catppuccin/nvim",
 		name = "catppuccin",
-		lazy = false,
+		lazy = true,
 		priority = 1000,
 		config = function()
 			require("catppuccin").setup({
-				flavour = "mocha", -- latte, frappe, macchiato, mocha
-				background = { -- :h background
-					light = "latte",
-					dark = "mocha",
-				},
-				transparent_background = false, -- disables setting the background color.
-				show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
-				term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
-				dim_inactive = {
-					enabled = false, -- dims the background color of inactive window
-					shade = "dark",
-					percentage = 0.15, -- percentage of the shade to apply to the inactive window
-				},
-				no_italic = false, -- Force no italic
-				no_bold = false, -- Force no bold
-				no_underline = false, -- Force no underline
-				styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
-					comments = { "italic" }, -- Change the style of comments
+				flavour = "mocha",
+				background = { light = "latte", dark = "mocha" },
+				transparent_background = false,
+				show_end_of_buffer = false,
+				term_colors = false,
+				dim_inactive = { enabled = false },
+				no_italic = false,
+				no_bold = false,
+				no_underline = false,
+				styles = {
+					comments = { "italic" },
 					conditionals = { "italic" },
 					loops = {},
 					functions = {},
@@ -600,201 +592,17 @@ require("lazy").setup({
 					telescope = true,
 					notify = false,
 					mini = false,
-					-- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
 				},
 			})
-			-- vim.cmd("colorscheme catppuccin") -- Uncomment to use Catppuccin
 		end,
-	},
-
-	-- OldWorld Theme (Relaxing, non-saturated colors)
-	{
-		"dgox16/oldworld.nvim",
-		lazy = false,
-		priority = 1000,
-		config = function()
-			require("oldworld").setup({
-				terminal_colors = true, -- enable terminal colors
-				variant = "default", -- default, oled, cooler
-				styles = { -- You can pass the style using the format: style = true
-					comments = {}, -- style for comments
-					keywords = {}, -- style for keywords
-					identifiers = {}, -- style for identifiers
-					functions = {}, -- style for functions
-					variables = {}, -- style for variables
-					booleans = {}, -- style for booleans
-				},
-				integrations = { -- You can disable/enable integrations
-					alpha = true,
-					cmp = true,
-					flash = true,
-					gitsigns = true,
-					hop = false,
-					indent_blankline = true,
-					lazy = true,
-					lsp = true,
-					markdown = true,
-					mason = true,
-					navic = false,
-					neo_tree = false,
-					neogit = false,
-					neorg = false,
-					noice = true,
-					notify = true,
-					rainbow_delimiters = true,
-					telescope = true,
-					treesitter = true,
-				},
-				highlight_overrides = {}
-			})
-			-- vim.cmd("colorscheme oldworld") -- Uncomment to use OldWorld
-		end,
-	},
-
-	-- Dracula Theme (Official Dracula colorscheme for Neovim)
-	{
-		"Mofiqul/dracula.nvim",
-		lazy = false,
-		priority = 1000,
-		config = function()
-			require("dracula").setup({
-				-- show the '~' characters after the end of buffers
-				show_end_of_buffer = true, -- default false
-				-- use transparent background
-				transparent_bg = false, -- default false
-				-- set custom lualine background color
-				lualine_bg_color = nil, -- default nil
-				-- set italic comment
-				italic_comment = true, -- default false
-				-- overrides the default highlights with table see `:h synIDattr`
-				overrides = {},
-				-- You can use overrides as table like this
-				-- overrides = {
-				--   NonText = { fg = "white" }, -- set NonText fg to white
-				--   NvimTreeIndentMarker = { link = "Comment" }, -- link to Comment
-				--   ToggleTerm = { fg = "white" },
-				-- },
-			})
-			-- vim.cmd("colorscheme dracula") -- Uncomment to use Dracula
-		end,
-	},
-
-	-- Vesper Theme (Port of VS Code Vesper theme)
-	{
-		"datsfilipe/vesper.nvim",
-		lazy = false,
-		priority = 1000,
-		config = function()
-			require("vesper").setup({
-				transparent = false, -- Boolean: Sets the background to transparent
-				italics = {
-					comments = true, -- Boolean: Italicizes comments
-					keywords = true, -- Boolean: Italicizes keywords
-					functions = true, -- Boolean: Italicizes functions
-					strings = true, -- Boolean: Italicizes strings
-					variables = true, -- Boolean: Italicizes variables
-				},
-				overrides = {}, -- A dictionary of group names, can be a function returning a dictionary or a table.
-				palette_overrides = {}
-			})
-			-- vim.cmd("colorscheme vesper") -- Uncomment to use Vesper
-		end,
-	},
-
-	-- Rosé Pine (three variants: main, moon, dawn)
-	{
-		"rose-pine/neovim",
-		name = "rose-pine",
-		lazy = false,
-		priority = 1000,
-		config = function()
-			-- Configure before selecting a Rosé Pine variant via Themery
-			require("rose-pine").setup({
-				variant = "auto",
-				dark_variant = "main",
-				enable = { terminal = true, legacy_highlights = true, migrations = true },
-				styles = { bold = true, italic = true, transparency = false },
-			})
-			-- vim.cmd("colorscheme rose-pine") -- Uncomment to use Rosé Pine directly
-		end,
-	},
-
-	-- Tokyo Night (multiple styles: night, storm, day, moon)
-	{
-		"folke/tokyonight.nvim",
-		lazy = false,
-		priority = 1000,
-		config = function()
-			-- Style is selected by colorscheme name (e.g. tokyonight, tokyonight-moon) or setup option
-			require("tokyonight").setup({})
-			-- vim.cmd("colorscheme tokyonight") -- Uncomment to use Tokyo Night directly
-		end,
-	},
-
-	-- Oxocarbon
-	{
-		"nyoom-engineering/oxocarbon.nvim",
-		lazy = false,
-		priority = 1000,
-	},
-
-	-- Sonokai
-	{
-		"sainnhe/sonokai",
-		lazy = false,
-		priority = 1000,
-	},
-
-	-- OneNord Theme (Nord + Atom One Dark)
-	{
-		"rmehri01/onenord.nvim",
-		lazy = false,
-		priority = 1000,
-		config = function()
-			require("onenord").setup({
-				theme = "dark", -- "dark" or "light". Alternatively, remove the option and set vim.o.background instead
-				borders = true, -- Split window borders
-				fade_nc = false, -- Fade non-current windows, making them more distinguishable
-				styles = {
-					comments = "NONE",
-					strings = "NONE",
-					keywords = "NONE",
-					functions = "NONE",
-					variables = "NONE",
-					diagnostics = "underline",
-				},
-				disable = {
-					background = false, -- Disable setting the background color
-					float_background = false, -- Disable setting the background color for floating windows
-					cursorline = false, -- Disable the cursorline
-					eob_lines = true, -- Hide the end-of-buffer lines
-				},
-				inverse = {
-					match_paren = false,
-				},
-				custom_highlights = {}, -- Overwrite default highlight groups
-				custom_colors = {}, -- Overwrite default colors
-			})
-			-- vim.cmd("colorscheme onenord") -- Uncomment to use OneNord directly
-		end,
-	},
-
-	-- Miasma Theme (Dark theme inspired by the woods)
-	{
-		"xero/miasma.nvim",
-		lazy = false,
-		priority = 1000,
-		-- No config needed - colorscheme is set via themery or manually
 	},
 
 	{ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
+		event = "BufReadPre",
 		dependencies = {
-			-- Automatically install LSPs to stdpath for neovim
 			"williamboman/mason.nvim",
 			"williamboman/mason-lspconfig.nvim",
-
-			-- Useful status updates for LSP
 			"j-hui/fidget.nvim",
 		},
 	},
@@ -864,6 +672,7 @@ require("lazy").setup({
 	-- Supermaven AI Code Completion
 	{
 		"supermaven-inc/supermaven-nvim",
+		event = "InsertEnter",
 		config = function()
 			require("supermaven-nvim").setup({
 				keymaps = {
@@ -900,7 +709,7 @@ require("lazy").setup({
 
 	{ -- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
-
+		event = "BufReadPost",
 		build = function()
 			pcall(require("nvim-treesitter.install").update({ with_sync = true }))
 		end,
@@ -970,18 +779,25 @@ require("lazy").setup({
 	"leoluz/nvim-dap-go",
 
 	-- Git related plugins
-	"tpope/vim-fugitive",
-	"lewis6991/gitsigns.nvim",
+	{ "tpope/vim-fugitive", event = "BufReadPre" },
+	{
+		"lewis6991/gitsigns.nvim",
+		event = "BufReadPre",
+		config = function()
+			require("plugins.gitsigns")
+		end,
+	},
 	{
 		"nvim-lualine/lualine.nvim",
+		event = "VeryLazy",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("plugins.lualine")
 		end,
 	},
-	{ "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
+	{ "lukas-reineke/indent-blankline.nvim", main = "ibl", event = "BufReadPost", opts = {} },
 
-	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
+	{ "tpope/vim-sleuth", event = "BufReadPost" }, -- Detect tabstop and shiftwidth automatically
 
 	-- Transparency
 	-- {
@@ -1074,6 +890,8 @@ require("lazy").setup({
 	-- },
 	{
 		"folke/zen-mode.nvim",
+		cmd = "ZenMode",
+		keys = { { "<leader>z", desc = "Zen mode" } },
 		opts = {
 			window = {
 				backdrop = 0.95, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
@@ -1225,261 +1043,4 @@ require("lazy").setup({
 			})
 		end,
 	},
-	
-	-- Theme picker with live preview
-	{
-		"zaldih/themery.nvim",
-		lazy = false,
-		config = function()
-			require("themery").setup({
-				themes = {
-					-- Alphabetically ordered themes
-					{
-						name = "Catppuccin Frappe",
-						colorscheme = "catppuccin",
-						before = [[
-							require("catppuccin").setup({
-								flavour = "frappe",
-								background = { light = "latte", dark = "mocha" },
-								transparent_background = false,
-								show_end_of_buffer = false,
-								term_colors = false,
-								dim_inactive = { enabled = false },
-								no_italic = false,
-								no_bold = false,
-								no_underline = false,
-								styles = {
-									comments = { "italic" },
-									conditionals = { "italic" },
-									loops = {},
-									functions = {},
-									keywords = {},
-									strings = {},
-									variables = {},
-									numbers = {},
-									booleans = {},
-									properties = {},
-									types = {},
-									operators = {},
-								},
-								color_overrides = {},
-								custom_highlights = {},
-								integrations = {
-									cmp = true,
-									gitsigns = true,
-									nvimtree = true,
-									telescope = true,
-									notify = false,
-									mini = false,
-								},
-							})
-						]],
-					},
-					{
-						name = "Catppuccin Latte",
-						colorscheme = "catppuccin",
-						before = [[
-							require("catppuccin").setup({
-								flavour = "latte",
-								background = { light = "latte", dark = "mocha" },
-								transparent_background = false,
-								show_end_of_buffer = false,
-								term_colors = false,
-								dim_inactive = { enabled = false },
-								no_italic = false,
-								no_bold = false,
-								no_underline = false,
-								styles = {
-									comments = { "italic" },
-									conditionals = { "italic" },
-									loops = {},
-									functions = {},
-									keywords = {},
-									strings = {},
-									variables = {},
-									numbers = {},
-									booleans = {},
-									properties = {},
-									types = {},
-									operators = {},
-								},
-								color_overrides = {},
-								custom_highlights = {},
-								integrations = {
-									cmp = true,
-									gitsigns = true,
-									nvimtree = true,
-									telescope = true,
-									notify = false,
-									mini = false,
-								},
-							})
-						]],
-					},
-					{
-						name = "Catppuccin Macchiato",
-						colorscheme = "catppuccin",
-						before = [[
-							require("catppuccin").setup({
-								flavour = "macchiato",
-								background = { light = "latte", dark = "mocha" },
-								transparent_background = false,
-								show_end_of_buffer = false,
-								term_colors = false,
-								dim_inactive = { enabled = false },
-								no_italic = false,
-								no_bold = false,
-								no_underline = false,
-								styles = {
-									comments = { "italic" },
-									conditionals = { "italic" },
-									loops = {},
-									functions = {},
-									keywords = {},
-									strings = {},
-									variables = {},
-									numbers = {},
-									booleans = {},
-									properties = {},
-									types = {},
-									operators = {},
-								},
-								color_overrides = {},
-								custom_highlights = {},
-								integrations = {
-									cmp = true,
-									gitsigns = true,
-									nvimtree = true,
-									telescope = true,
-									notify = false,
-									mini = false,
-								},
-							})
-						]],
-					},
-					{
-						name = "Catppuccin Mocha",
-						colorscheme = "catppuccin",
-						before = [[
-							require("catppuccin").setup({
-								flavour = "mocha",
-								background = { light = "latte", dark = "mocha" },
-								transparent_background = false,
-								show_end_of_buffer = false,
-								term_colors = false,
-								dim_inactive = { enabled = false },
-								no_italic = false,
-								no_bold = false,
-								no_underline = false,
-								styles = {
-									comments = { "italic" },
-									conditionals = { "italic" },
-									loops = {},
-									functions = {},
-									keywords = {},
-									strings = {},
-									variables = {},
-									numbers = {},
-									booleans = {},
-									properties = {},
-									types = {},
-									operators = {},
-								},
-								color_overrides = {},
-								custom_highlights = {},
-								integrations = {
-									cmp = true,
-									gitsigns = true,
-									nvimtree = true,
-									telescope = true,
-									notify = false,
-									mini = false,
-								},
-							})
-						]],
-					},
-					{
-						name = "Dracula",
-						colorscheme = "dracula",
-					},
-					{
-						name = "Miasma",
-						colorscheme = "miasma",
-					},
-					{
-						name = "OldWorld",
-						colorscheme = "oldworld",
-					},
-					{
-						name = "OneNord",
-						colorscheme = "onenord",
-					},
-					{
-						name = "Oxocarbon",
-						colorscheme = "oxocarbon",
-					},
-					{
-						name = "Rose Pine",
-						colorscheme = "rose-pine",
-					},
-					{
-						name = "Sonokai",
-						colorscheme = "sonokai",
-					},
-					{
-						name = "Tokyo Dark",
-						colorscheme = "tokyodark",
-					},
-					{
-						name = "Tokyo Night (Day)",
-						colorscheme = "tokyonight-day",
-					},
-					{
-						name = "Tokyo Night (Moon)",
-						colorscheme = "tokyonight-moon",
-					},
-					{
-						name = "Tokyo Night (Night)",
-						colorscheme = "tokyonight-night",
-					},
-					{
-						name = "Tokyo Night (Storm)",
-						colorscheme = "tokyonight-storm",
-					},
-					{
-						name = "Vague",
-						colorscheme = "vague",
-					},
-					{
-						name = "Vesper",
-						colorscheme = "vesper",
-					},
-				},
-				livePreview = true,
-				globalBefore = [[
-					-- Reset any theme-specific settings before applying new theme
-				]],
-				globalAfter = [[
-					-- Apply our custom highlighting after theme change
-					vim.cmd("doautocmd ColorScheme")
-				]],
-			})
-			
-			-- Set default theme if none is saved
-			local current_theme = require("themery").getCurrentTheme()
-			if not current_theme then
-				vim.cmd("colorscheme catppuccin")
-			end
-		end,
-	},
 })
-
--- ========================================
--- DEFAULT COLORSCHEME SELECTION
--- ========================================
--- Theme selection is now handled by Themery plugin
--- The plugin will automatically load the last selected theme on startup
--- Use :ChangeTheme or <leader>t to change themes
-
--- If no theme is selected via Themery, Neovim will use its default
-

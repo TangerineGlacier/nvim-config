@@ -100,7 +100,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- File Explorer
-vim.keymap.set("n", "<D-p>", "<cmd>lua require('telescope.builtin').find_files({hidden = false, no_ignore = true, follow = true, respect_gitignore = false, file_ignore_patterns = {'node_modules', '**/node_modules/**', '**/node_modules/**/*', '**/node_modules/**/*.*', '**/node_modules/**/*.js', '**/node_modules/**/*.ts', '**/node_modules/**/*.json', '**/node_modules/**/*.md'}, find_command = {'rg', '--files', '--hidden', '--glob=!.git/', '--glob=!node_modules/', '--glob=!**/node_modules/', '--glob=!**/node_modules/**', '--glob=!**/node_modules/**/*', '--glob=!**/node_modules/**/*.*', '--glob=!__pycache__/', '--glob=!.pytest_cache/', '--glob=!.venv/', '--glob=!venv/', '--glob=!env/', '--glob=!ENV/', '--glob=!dist/', '--glob=!build/', '--glob=!.DS_Store'}})<CR>", { silent = true, noremap = true })
+vim.keymap.set("n", "<D-p>", "<cmd>lua require('telescope.builtin').find_files({hidden = true, no_ignore = true, follow = true, respect_gitignore = false, file_ignore_patterns = {'node_modules', '**/node_modules/**'}, find_command = {'rg', '--files', '--hidden', '--glob=!.git/', '--glob=!node_modules/', '--glob=!**/node_modules/**', '--glob=!__pycache__/', '--glob=!.pytest_cache/', '--glob=!.venv/', '--glob=!venv/', '--glob=!env/', '--glob=!ENV/', '--glob=!dist/', '--glob=!build/', '--glob=!.DS_Store'}})<CR>", { silent = true, noremap = true })
 
 vim.keymap.set(
 	"n",
@@ -110,10 +110,6 @@ vim.keymap.set(
 )
 
 vim.keymap.set("n", "<leader>l", ":Lazy<CR>", { noremap = true, silent = true })
-
--- Theme changer
-vim.keymap.set("n", "<leader>t", ":Themery<CR>", { noremap = true, silent = true, desc = "Change theme" })
-vim.api.nvim_create_user_command("ChangeTheme", ":Themery<CR>", { desc = "Open theme picker" })
 
 -- Comment mappings
 vim.keymap.set("v", "<leader>/", "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", { noremap = true, silent = true, desc = "Toggle comment" })

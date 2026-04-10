@@ -128,29 +128,31 @@ vim.keymap.set("v", "<A-S-Right>", "w", opts)
 require("keymaps")
 require("plugins.lazy")
 require("plugins.misc")
-require("plugins.lualine")
--- require("plugins.formatter")
 require("options")
 require("misc")
-require("plugins.dap")
-require("plugins.gitsigns")
-require("plugins.telescope")
-require("plugins.treesitter")
-require("plugins.lsp")
-require("plugins.trouble")
-require("plugins.nvim-tangerine").setup()
-require("plugins.zenmode")
-require("plugins.neogit")
-require("plugins.codesnap")
-require("plugins.mini")
-require("snippets.react")
 
-require("plugins.prettier")
-
-require("plugins.highlights") -- Enable to remove highlighting effects while keeping colors
-require("plugins.harpoon")
-require("plugins.obsidian") -- Obsidian integration
-vim.keymap.set("n", "<Esc>p", "<cmd>Telescope find_files<cr>", { noremap = true, silent = true })
+-- Defer heavy plugin configs until after UI is ready (faster startup)
+vim.api.nvim_create_autocmd("User", {
+	pattern = "VeryLazy",
+	once = true,
+	callback = function()
+		require("plugins.dap")
+		require("plugins.telescope")
+		require("plugins.treesitter")
+		require("plugins.lsp")
+		require("plugins.trouble")
+		require("plugins.zenmode")
+		require("plugins.neogit")
+		require("plugins.codesnap")
+		require("plugins.mini")
+		require("snippets.react")
+		require("plugins.prettier")
+		require("plugins.highlights")
+		require("plugins.harpoon")
+		require("plugins.obsidian")
+		vim.keymap.set("n", "<Esc>p", "<cmd>Telescope find_files<cr>", { noremap = true, silent = true })
+	end,
+})
 
 -- Auto-save when leaving insert mode
 vim.api.nvim_create_autocmd("InsertLeave", {
