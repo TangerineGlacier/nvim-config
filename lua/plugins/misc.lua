@@ -42,7 +42,40 @@ require('go').setup({
   -- Fix for GoIfErr command
   iferr_vertical = false,
   iferr_abbrev = true,
+  -- go.nvim maps <space>e to diagnostic float on Go buffers; leader is space, so that overrides Neotree.
+  lsp_on_client_start = function(_, bufnr)
+    pcall(vim.keymap.del, "n", "<space>e", { buffer = bufnr })
+    vim.keymap.set("n", "<leader>df", vim.diagnostic.open_float, {
+      buffer = bufnr,
+      silent = true,
+      noremap = true,
+      desc = "Diagnostic float (was <space>e from go.nvim)",
+    })
+  end,
 })
+
+-- Neovim 0.11 ships vim.lsp.codelens without enable(); go.nvim still calls it.
+-- Use refresh({ bufnr = 0 }) when enable is missing (newer nightlies may add enable).
+do
+  local m = require("go.codelens")
+  function m.refresh()
+    local gopls = require("go.lsp").client()
+    require("go.utils").log("refresh codelens")
+    if not gopls then
+      return
+    end
+    if _GO_NVIM_CFG.lsp_codelens == true then
+      if vim.lsp.codelens.enable then
+        vim.lsp.codelens.enable(true, { bufnr = 0 })
+      else
+        vim.lsp.codelens.refresh({ bufnr = 0 })
+      end
+    else
+      require("go.utils").log("refresh codelens")
+      vim.lsp.codelens.clear(gopls.id, 0)
+    end
+  end
+end
 
 -- Add command to clear Go temporary files
 vim.api.nvim_create_user_command('GoClearTemp', function()

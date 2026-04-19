@@ -84,18 +84,20 @@ vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 -- Noice
 vim.api.nvim_set_keymap("n", "<leader>nn", ":Noice dismiss<CR>", { noremap = true })
 
+-- Leader is space, so <leader>e is the same as <space>e. go.nvim also maps <space>e on Go buffers,
+-- which would steal the Neotree toggle — use a dedicated key for GoIfErr instead.
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "go",
 	callback = function()
-		vim.keymap.set("n", "<leader>e", function()
-			-- Check if we're in a valid Go context before running GoIfErr
+		local buf = vim.api.nvim_get_current_buf()
+		vim.keymap.set("n", "<leader>ie", function()
 			local line = vim.api.nvim_get_current_line()
 			if line:match("err%s*:=") or line:match("err%s*!=") or line:match("if%s+err") then
 				vim.cmd("GoIfErr")
 			else
 				vim.notify("GoIfErr: No error variable found on current line", vim.log.levels.WARN)
 			end
-		end, { silent = true, noremap = true, desc = "Generate if err != nil block" })
+		end, { silent = true, noremap = true, buffer = buf, desc = "Generate if err != nil block (GoIfErr)" })
 	end,
 })
 
