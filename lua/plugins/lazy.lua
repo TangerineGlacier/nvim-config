@@ -1043,4 +1043,5 @@ require("lazy").setup({
 			})
 		end,
 	},
+	require("plugins.skills"),
 })

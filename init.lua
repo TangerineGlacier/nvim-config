@@ -1,6 +1,18 @@
 -- vim.o.laststatus = 3
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+
+-- Some plugins (e.g. snacks dashboard) expect a valid cwd on startup.
+-- If Neovim is launched from a deleted directory, uv.cwd() can be nil.
+do
+	local cwd = vim.uv.cwd()
+	if not cwd then
+		local home = vim.uv.os_homedir() or vim.env.HOME
+		if home and home ~= "" then
+			pcall(vim.fn.chdir, home)
+		end
+	end
+end
 -- Use the system clipboard for all yank, delete, change, and put operations
 vim.opt.clipboard = "unnamedplus"
 vim.o.mouse = "a"
